@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^Get-ChildItem \"Connector Templates\" -Filter \\*\\.json \\| ForEach-Object \\{ \\$json = Get-Content \\$_\\.FullName -Raw \\| ConvertFrom-Json; \\$taskType = \\(\\$json\\.properties \\| Where-Object \\{ \\$_\\.binding\\.type -eq 'zeebe:taskDefinition:type' \\} \\| Select-Object -First 1\\)\\.value; \"\\{0\\}: \\{1\\}\" -f \\$_\\.Name, \\$taskType \\}$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
