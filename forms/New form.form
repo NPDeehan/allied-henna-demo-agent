@@ -1,0 +1,68 @@
+{
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.8.0",
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "ce5fd89"
+  },
+  "schemaVersion": 19,
+  "id": "Form_02d3bks",
+  "components": [
+    {
+      "label": "createCustomer",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0xjw1ch",
+        "columns": null
+      },
+      "id": "Field_1jo3gi6",
+      "key": "createCustomer",
+      "defaultValue": true
+    },
+    {
+      "label": "createEmployee",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0hd01i0",
+        "columns": null
+      },
+      "id": "Field_0yemqw7",
+      "key": "createEmployee",
+      "defaultValue": true
+    },
+    {
+      "label": "createCompany",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0c1tttg",
+        "columns": null
+      },
+      "id": "Field_1oni307",
+      "key": "createCompany",
+      "defaultValue": true
+    },
+    {
+      "label": "createAccount",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0f29211",
+        "columns": null
+      },
+      "id": "Field_12e8m43",
+      "key": "createAccount",
+      "defaultValue": true
+    },
+    {
+      "label": "createPolicy",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_13h0aip",
+        "columns": null
+      },
+      "id": "Field_0aiuxxr",
+      "key": "createPolicy",
+      "defaultValue": true
+    }
+  ],
+  "type": "default"
+}

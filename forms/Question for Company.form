@@ -1,0 +1,23 @@
+{
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.8.0",
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "4327945"
+  },
+  "schemaVersion": 19,
+  "id": "Form_048h1nh",
+  "components": [
+    {
+      "label": "Question About the Company",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_13dsjmy",
+        "columns": null
+      },
+      "id": "Field_0evgn7t",
+      "key": "questionFromUser"
+    }
+  ],
+  "type": "default"
+}

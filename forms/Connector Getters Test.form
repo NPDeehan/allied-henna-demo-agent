@@ -1,0 +1,63 @@
+{
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.8.0",
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "ce5fd89"
+  },
+  "schemaVersion": 19,
+  "id": "connector-getters-test-1hdm72n",
+  "components": [
+    {
+      "label": "searchEmployee",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0v16hwo",
+        "columns": null
+      },
+      "id": "Field_0mmrn9b",
+      "key": "searchEmployee"
+    },
+    {
+      "label": "searchCompany",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0l3e9yd",
+        "columns": null
+      },
+      "id": "Field_0x17fkm",
+      "key": "searchCompany"
+    },
+    {
+      "label": "searchCustomer",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_1fmegkg",
+        "columns": null
+      },
+      "id": "Field_0ujwjgf",
+      "key": "searchCustomer"
+    },
+    {
+      "label": "searchAccount",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_09gr33v",
+        "columns": null
+      },
+      "id": "Field_18ci4lr",
+      "key": "searchAccount"
+    },
+    {
+      "label": "searchPolicy",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_1vx9msx",
+        "columns": null
+      },
+      "id": "Field_03ln2uq",
+      "key": "searchPolicy"
+    }
+  ],
+  "type": "default"
+}

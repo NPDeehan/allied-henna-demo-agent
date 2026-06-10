@@ -1,0 +1,520 @@
+{
+  "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+  "name": "Manage Package",
+  "id": "com.example.camunda.manage-package",
+  "version": 2,
+  "description": "Create, update, delete, or query logistics packages. Tracks sender/recipient, addresses, weight, service level, and delivery status.",
+  "category": {
+    "id": "connectors",
+    "name": "Connectors"
+  },
+  "appliesTo": [
+    "bpmn:ServiceTask"
+  ],
+  "elementType": {
+    "value": "bpmn:ServiceTask"
+  },
+  "groups": [
+    {
+      "id": "operation",
+      "label": "Operation"
+    },
+    {
+      "id": "query",
+      "label": "Search Filters"
+    },
+    {
+      "id": "core",
+      "label": "Package Details"
+    },
+    {
+      "id": "parties",
+      "label": "Sender & Recipient"
+    },
+    {
+      "id": "dates",
+      "label": "Dates & Cost"
+    },
+    {
+      "id": "output",
+      "label": "Output Mapping"
+    }
+  ],
+  "properties": [
+    {
+      "type": "Hidden",
+      "value": "manage-package",
+      "binding": {
+        "type": "zeebe:taskDefinition:type"
+      }
+    },
+    {
+      "id": "operation",
+      "label": "Operation",
+      "description": "Action to perform on a package.",
+      "type": "Dropdown",
+      "value": "CREATE",
+      "choices": [
+        {
+          "name": "CREATE",
+          "value": "CREATE"
+        },
+        {
+          "name": "UPDATE",
+          "value": "UPDATE"
+        },
+        {
+          "name": "DELETE",
+          "value": "DELETE"
+        },
+        {
+          "name": "QUERY",
+          "value": "QUERY"
+        }
+      ],
+      "group": "operation",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "operation"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "packageIdCreate",
+      "label": "Package ID",
+      "description": "Optional. Auto-generated when omitted.",
+      "type": "Text",
+      "group": "operation",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "packageId"
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "CREATE"
+      }
+    },
+    {
+      "id": "packageIdUpdate",
+      "label": "Package ID",
+      "description": "Required. ID of the package to update.",
+      "type": "Text",
+      "group": "operation",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "packageId"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "UPDATE"
+      }
+    },
+    {
+      "id": "packageIdDelete",
+      "label": "Package ID",
+      "description": "Required. ID of the package to delete.",
+      "type": "Text",
+      "group": "operation",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "packageId"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "DELETE"
+      }
+    },
+    {
+      "id": "packageIdQuery",
+      "label": "Package ID",
+      "description": "Optional. Returns a single package when provided; otherwise applies other filters.",
+      "type": "Text",
+      "group": "operation",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "packageId"
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "QUERY"
+      }
+    },
+    {
+      "id": "queryCustomerId",
+      "label": "Customer ID",
+      "description": "Optional. Filter by the customer who shipped the package. Leave empty to ignore.",
+      "type": "Text",
+      "group": "query",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "customerId"
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "QUERY"
+      }
+    },
+    {
+      "id": "queryStatus",
+      "label": "Status",
+      "description": "Optional. One of: CREATED, IN_TRANSIT, OUT_FOR_DELIVERY, DELIVERED, RETURNED, LOST. Leave empty to ignore.",
+      "type": "Text",
+      "group": "query",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "status"
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "QUERY"
+      }
+    },
+    {
+      "id": "queryServiceLevel",
+      "label": "Service Level",
+      "description": "Optional. One of: ECONOMY, STANDARD, EXPRESS, OVERNIGHT. Leave empty to ignore.",
+      "type": "Text",
+      "group": "query",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "serviceLevel"
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "QUERY"
+      }
+    },
+    {
+      "id": "trackingNumber",
+      "label": "Tracking Number",
+      "description": "Optional. Auto-generated (PKG-XXXXXX) when omitted on CREATE.",
+      "type": "Text",
+      "group": "core",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "trackingNumber"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "status",
+      "label": "Status",
+      "description": "Defaults to CREATED on CREATE. Allowed values: CREATED, IN_TRANSIT, OUT_FOR_DELIVERY, DELIVERED, RETURNED, LOST.",
+      "type": "Text",
+      "group": "core",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "status"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "serviceLevel",
+      "label": "Service Level",
+      "description": "Required for CREATE. Shipping speed tier. Allowed values: ECONOMY, STANDARD, EXPRESS, OVERNIGHT.",
+      "type": "Text",
+      "group": "core",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "serviceLevel"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "weightKg",
+      "label": "Weight (kg)",
+      "description": "Required for CREATE. Package weight in kilograms.",
+      "type": "Text",
+      "group": "core",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "weightKg"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "contents",
+      "label": "Contents",
+      "description": "Optional description of what the package contains.",
+      "type": "Text",
+      "group": "core",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "contents"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "notes",
+      "label": "Notes",
+      "description": "Optional free-text notes.",
+      "type": "Text",
+      "group": "core",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "notes"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "customerId",
+      "label": "Customer ID",
+      "description": "Optional. Links the package to the customer who shipped it.",
+      "type": "Text",
+      "group": "parties",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "customerId"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "senderName",
+      "label": "Sender Name",
+      "description": "Required for CREATE.",
+      "type": "Text",
+      "group": "parties",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "senderName"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "recipientName",
+      "label": "Recipient Name",
+      "description": "Required for CREATE.",
+      "type": "Text",
+      "group": "parties",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "recipientName"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "originAddress",
+      "label": "Origin Address",
+      "description": "Required for CREATE. Where the package ships from.",
+      "type": "Text",
+      "group": "parties",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "originAddress"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "destinationAddress",
+      "label": "Destination Address",
+      "description": "Required for CREATE. Where the package is delivered.",
+      "type": "Text",
+      "group": "parties",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "destinationAddress"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "shippedDate",
+      "label": "Shipped Date",
+      "description": "Optional. Format: YYYY-MM-DD.",
+      "type": "Text",
+      "group": "dates",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "shippedDate"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "estimatedDeliveryDate",
+      "label": "Estimated Delivery Date",
+      "description": "Optional. Format: YYYY-MM-DD.",
+      "type": "Text",
+      "group": "dates",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "estimatedDeliveryDate"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "deliveredDate",
+      "label": "Delivered Date",
+      "description": "Optional. Format: YYYY-MM-DD. Set when the package is delivered.",
+      "type": "Text",
+      "group": "dates",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "deliveredDate"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "shippingCost",
+      "label": "Shipping Cost",
+      "description": "Optional. Cost charged for shipping.",
+      "type": "Text",
+      "group": "dates",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "shippingCost"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "packageCrudResultOutput",
+      "label": "Package Result Variable",
+      "description": "Process variable that receives the full response (package data, status, message).",
+      "type": "String",
+      "group": "output",
+      "value": "packageCrudResult",
+      "binding": {
+        "type": "zeebe:output",
+        "source": "=packageCrudResult",
+        "target": "packageCrudResult"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "operationStatusOutput",
+      "label": "Operation Status Variable",
+      "description": "Shortcut variable: SUCCESS, NOT_FOUND, VALIDATION_ERROR, or ERROR.",
+      "type": "String",
+      "group": "output",
+      "value": "operationStatus",
+      "binding": {
+        "type": "zeebe:output",
+        "source": "=operationStatus",
+        "target": "operationStatus"
+      }
+    }
+  ],
+  "icon": {
+    "contents": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23212529' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 3h15v13H1z'%3E%3C/path%3E%3Cpath d='M16 8h4l3 3v5h-7V8z'%3E%3C/path%3E%3Ccircle cx='5.5' cy='18.5' r='2.5'%3E%3C/circle%3E%3Ccircle cx='18.5' cy='18.5' r='2.5'%3E%3C/circle%3E%3C/svg%3E"
+  }
+}

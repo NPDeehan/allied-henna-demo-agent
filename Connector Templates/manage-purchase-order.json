@@ -1,0 +1,341 @@
+{
+  "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+  "name": "Manage Purchase Order",
+  "id": "com.example.camunda.manage-purchase-order",
+  "version": 2,
+  "description": "Create, update, delete, or query purchase order headers (status, customer, dates, notes). Items are managed separately with the Manage Purchase Item connector; the order total is computed automatically from its items.",
+  "category": {
+    "id": "connectors",
+    "name": "Connectors"
+  },
+  "appliesTo": [
+    "bpmn:ServiceTask"
+  ],
+  "elementType": {
+    "value": "bpmn:ServiceTask"
+  },
+  "groups": [
+    {
+      "id": "operation",
+      "label": "Operation"
+    },
+    {
+      "id": "query",
+      "label": "Search Filters"
+    },
+    {
+      "id": "core",
+      "label": "Order Details"
+    },
+    {
+      "id": "output",
+      "label": "Output Mapping"
+    }
+  ],
+  "properties": [
+    {
+      "type": "Hidden",
+      "value": "manage-purchase-order",
+      "binding": {
+        "type": "zeebe:taskDefinition:type"
+      }
+    },
+    {
+      "id": "operation",
+      "label": "Operation",
+      "description": "Action to perform on a purchase order.",
+      "type": "Dropdown",
+      "value": "CREATE",
+      "choices": [
+        {
+          "name": "CREATE",
+          "value": "CREATE"
+        },
+        {
+          "name": "UPDATE",
+          "value": "UPDATE"
+        },
+        {
+          "name": "DELETE",
+          "value": "DELETE"
+        },
+        {
+          "name": "QUERY",
+          "value": "QUERY"
+        }
+      ],
+      "group": "operation",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "operation"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "orderIdCreate",
+      "label": "Order ID",
+      "description": "Optional. Auto-generated when omitted.",
+      "type": "Text",
+      "group": "operation",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "orderId"
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "CREATE"
+      }
+    },
+    {
+      "id": "orderIdUpdate",
+      "label": "Order ID",
+      "description": "Required. ID of the order to update.",
+      "type": "Text",
+      "group": "operation",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "orderId"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "UPDATE"
+      }
+    },
+    {
+      "id": "orderIdDelete",
+      "label": "Order ID",
+      "description": "Required. ID of the order to delete.",
+      "type": "Text",
+      "group": "operation",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "orderId"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "DELETE"
+      }
+    },
+    {
+      "id": "orderIdQuery",
+      "label": "Order ID",
+      "description": "Optional. Returns a single order when provided; otherwise applies other filters.",
+      "type": "Text",
+      "group": "operation",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "orderId"
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "QUERY"
+      }
+    },
+    {
+      "id": "queryCustomerId",
+      "label": "Customer ID",
+      "description": "Optional. Filter by the customer the order is for. Leave empty to ignore.",
+      "type": "Text",
+      "group": "query",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "customerId"
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "QUERY"
+      }
+    },
+    {
+      "id": "queryStatus",
+      "label": "Status",
+      "description": "Optional. One of: DRAFT, SUBMITTED, APPROVED, FULFILLED, CANCELLED. Leave empty to ignore.",
+      "type": "Text",
+      "group": "query",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "status"
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "QUERY"
+      }
+    },
+    {
+      "id": "orderNumber",
+      "label": "Order Number",
+      "description": "Optional. Auto-generated (PO-XXXXXX) when omitted on CREATE.",
+      "type": "Text",
+      "group": "core",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "orderNumber"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "status",
+      "label": "Status",
+      "description": "Defaults to DRAFT on CREATE. Allowed values: DRAFT, SUBMITTED, APPROVED, FULFILLED, CANCELLED.",
+      "type": "Text",
+      "group": "core",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "status"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "customerId",
+      "label": "Customer ID",
+      "description": "Optional. The customer the order is placed for.",
+      "type": "Text",
+      "group": "core",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "customerId"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "orderDateCreate",
+      "label": "Order Date",
+      "description": "Required. Format: YYYY-MM-DD.",
+      "type": "Text",
+      "group": "core",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "orderDate"
+      },
+      "constraints": {
+        "notEmpty": true
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "CREATE"
+      }
+    },
+    {
+      "id": "orderDateUpdate",
+      "label": "Order Date",
+      "description": "Optional. Format: YYYY-MM-DD.",
+      "type": "Text",
+      "group": "core",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "orderDate"
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "UPDATE"
+      }
+    },
+    {
+      "id": "expectedDeliveryDate",
+      "label": "Expected Delivery Date",
+      "description": "Optional. Format: YYYY-MM-DD.",
+      "type": "Text",
+      "group": "core",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "expectedDeliveryDate"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "notes",
+      "label": "Notes",
+      "description": "Optional free-text notes.",
+      "type": "Text",
+      "group": "core",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "notes"
+      },
+      "condition": {
+        "property": "operation",
+        "oneOf": [
+          "CREATE",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "id": "orderCrudResultOutput",
+      "label": "Order Result Variable",
+      "description": "Process variable that receives the full response (order data incl. lines, status, message).",
+      "type": "String",
+      "group": "output",
+      "value": "orderCrudResult",
+      "binding": {
+        "type": "zeebe:output",
+        "source": "=orderCrudResult",
+        "target": "orderCrudResult"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "operationStatusOutput",
+      "label": "Operation Status Variable",
+      "description": "Shortcut variable: SUCCESS, NOT_FOUND, VALIDATION_ERROR, or ERROR.",
+      "type": "String",
+      "group": "output",
+      "value": "operationStatus",
+      "binding": {
+        "type": "zeebe:output",
+        "source": "=operationStatus",
+        "target": "operationStatus"
+      }
+    }
+  ],
+  "icon": {
+    "contents": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23198754' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'%3E%3C/path%3E%3Cpolyline points='14 2 14 8 20 8'%3E%3C/polyline%3E%3Cline x1='16' y1='13' x2='8' y2='13'%3E%3C/line%3E%3Cline x1='16' y1='17' x2='8' y2='17'%3E%3C/line%3E%3C/svg%3E"
+  }
+}

@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="ce5fd89" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.8.0">
+  <bpmn:process id="DetTestConnec" name="Deterministic Test of Connectors" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formId="Form_02d3bks" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0vki6lc</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0vki6lc" sourceRef="StartEvent_1" targetRef="Gateway_1x0kkd1" />
+    <bpmn:sequenceFlow id="Flow_0swvh3n" sourceRef="Gateway_1x0kkd1" targetRef="Activity_11tkxde">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=createAccount</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_11tkxde" name="Manage Account Record" zeebe:modelerTemplate="com.example.camunda.manage-account-record" zeebe:modelerTemplateVersion="7" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%230d6efd&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Crect x=&#39;2&#39; y=&#39;5&#39; width=&#39;20&#39; height=&#39;14&#39; rx=&#39;2&#39; ry=&#39;2&#39;%3E%3C/rect%3E%3Cline x1=&#39;2&#39; y1=&#39;10&#39; x2=&#39;22&#39; y2=&#39;10&#39;%3E%3C/line%3E%3Ccircle cx=&#39;8&#39; cy=&#39;15&#39; r=&#39;1&#39;%3E%3C/circle%3E%3Cpath d=&#39;M14 15h5&#39;%3E%3C/path%3E%3Cpath d=&#39;M16 3v4&#39;%3E%3C/path%3E%3Cpath d=&#39;M14 5h4&#39;%3E%3C/path%3E%3C/svg%3E">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="manage-account-record" />
+        <zeebe:ioMapping type="search-account">
+          <zeebe:input source="CREATE" target="operation" />
+          <zeebe:input target="accountId" />
+          <zeebe:input source="ABC-123" target="accountNumber" />
+          <zeebe:input source="PERSONAL" target="accountType" />
+          <zeebe:input source="1000" target="balance" />
+          <zeebe:input source="EUR" target="currency" />
+          <zeebe:input source="ACTIVE" target="status" />
+          <zeebe:input source="5" target="interestRate" />
+          <zeebe:input source="2020-01-01" target="openedDate" />
+          <zeebe:input source="2021-01-01" target="lastActivityDate" />
+          <zeebe:output source="=accountCrudResult" target="accountCrudResult" />
+          <zeebe:output source="=operationStatus" target="accountoperationStatus" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0swvh3n</bpmn:incoming>
+      <bpmn:outgoing>Flow_11w09wj</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_05iwwav" sourceRef="Gateway_1x0kkd1" targetRef="Activity_1a148t8">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=createCompany</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_1a148t8" name="Manage Company Record" zeebe:modelerTemplate="com.example.camunda.manage-company-record" zeebe:modelerTemplateVersion="5" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%23198754&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Cpath d=&#39;M3 21h18&#39;%3E%3C/path%3E%3Crect x=&#39;5&#39; y=&#39;3&#39; width=&#39;14&#39; height=&#39;18&#39; rx=&#39;1&#39; ry=&#39;1&#39;%3E%3C/rect%3E%3Cpath d=&#39;M9 7h2&#39;%3E%3C/path%3E%3Cpath d=&#39;M13 7h2&#39;%3E%3C/path%3E%3Cpath d=&#39;M9 11h2&#39;%3E%3C/path%3E%3Cpath d=&#39;M13 11h2&#39;%3E%3C/path%3E%3Cpath d=&#39;M11 21v-4h2v4&#39;%3E%3C/path%3E%3C/svg%3E">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="manage-company-record" />
+        <zeebe:ioMapping>
+          <zeebe:input source="CREATE" target="operation" />
+          <zeebe:input target="companyId" />
+          <zeebe:input source="Niall Corp" target="companyName" />
+          <zeebe:input source="Berlin, Germany" target="address" />
+          <zeebe:input target="contactPerson" />
+          <zeebe:input target="phoneNumber" />
+          <zeebe:output source="=companyCrudResult" target="companyCrudResult" />
+          <zeebe:output source="=operationStatus" target="companyoperationStatus" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_05iwwav</bpmn:incoming>
+      <bpmn:outgoing>Flow_15s4c5e</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_0r0jqmo" name="Manage Customer record" zeebe:modelerTemplate="com.example.camunda.manage-customer-record" zeebe:modelerTemplateVersion="6" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%236f42c1&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Ccircle cx=&#39;12&#39; cy=&#39;7&#39; r=&#39;4&#39;%3E%3C/circle%3E%3Cpath d=&#39;M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2&#39;%3E%3C/path%3E%3Cpath d=&#39;M3 11h4&#39;%3E%3C/path%3E%3Cpath d=&#39;M5 9v4&#39;%3E%3C/path%3E%3Cpath d=&#39;M17 11h4&#39;%3E%3C/path%3E%3C/svg%3E">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="manage-customer-record" />
+        <zeebe:ioMapping>
+          <zeebe:input source="CREATE" target="operation" />
+          <zeebe:input target="customerId" />
+          <zeebe:input source="Greg" target="customerName" />
+          <zeebe:input source="Pune, India" target="address" />
+          <zeebe:input source="1" target="employeeId" />
+          <zeebe:input source="L1" target="trustLevel" />
+          <zeebe:output source="=customerCrudResult" target="customerCrudResult" />
+          <zeebe:output source="=operationStatus" target="customeroperationStatus" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0wjfhe7</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fnr69b</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0wjfhe7" sourceRef="Gateway_1x0kkd1" targetRef="Activity_0r0jqmo">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=createCustomer</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1xyoxz3" sourceRef="Gateway_1x0kkd1" targetRef="Activity_18vdjzd">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=createEmployee</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_18vdjzd" name="Manage Employee" zeebe:modelerTemplate="com.example.camunda.manage-employee-record" zeebe:modelerTemplateVersion="5" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%230f766e&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Crect x=&#39;3&#39; y=&#39;4&#39; width=&#39;18&#39; height=&#39;16&#39; rx=&#39;2&#39; ry=&#39;2&#39;%3E%3C/rect%3E%3Ccircle cx=&#39;8&#39; cy=&#39;10&#39; r=&#39;2&#39;%3E%3C/circle%3E%3Cpath d=&#39;M6 16c0-1.5 1-2.5 2-2.5s2 1 2 2.5&#39;%3E%3C/path%3E%3Cline x1=&#39;13&#39; y1=&#39;9&#39; x2=&#39;18&#39; y2=&#39;9&#39;%3E%3C/line%3E%3Cline x1=&#39;13&#39; y1=&#39;12&#39; x2=&#39;18&#39; y2=&#39;12&#39;%3E%3C/line%3E%3Cline x1=&#39;13&#39; y1=&#39;15&#39; x2=&#39;18&#39; y2=&#39;15&#39;%3E%3C/line%3E%3C/svg%3E">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="manage-employee-record" />
+        <zeebe:ioMapping>
+          <zeebe:input source="CREATE" target="operation" />
+          <zeebe:input target="employeeId" />
+          <zeebe:input source="Niall Patrick Deehan" target="fullName" />
+          <zeebe:input source="Super Cool Dude" target="jobTitle" />
+          <zeebe:input source="Of Keeping it real" target="department" />
+          <zeebe:input target="phoneNumber" />
+          <zeebe:output source="=employeeCrudResult" target="employeeCrudResult" />
+          <zeebe:output source="=operationStatus" target="employeeoperationStatus" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xyoxz3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0z63ujz</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_11w09wj" sourceRef="Activity_11tkxde" targetRef="Gateway_02j82yd" />
+    <bpmn:sequenceFlow id="Flow_15s4c5e" sourceRef="Activity_1a148t8" targetRef="Gateway_02j82yd" />
+    <bpmn:sequenceFlow id="Flow_1fnr69b" sourceRef="Activity_0r0jqmo" targetRef="Gateway_02j82yd" />
+    <bpmn:sequenceFlow id="Flow_0z63ujz" sourceRef="Activity_18vdjzd" targetRef="Gateway_02j82yd" />
+    <bpmn:sequenceFlow id="Flow_0j78lie" sourceRef="Gateway_02j82yd" targetRef="Activity_1pols5c" />
+    <bpmn:userTask id="Activity_1pols5c" name="See Results">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0j78lie</bpmn:incoming>
+      <bpmn:outgoing>Flow_091cm4j</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:inclusiveGateway id="Gateway_1x0kkd1" default="Flow_12d5yls">
+      <bpmn:incoming>Flow_0vki6lc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0swvh3n</bpmn:outgoing>
+      <bpmn:outgoing>Flow_05iwwav</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0wjfhe7</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1xyoxz3</bpmn:outgoing>
+      <bpmn:outgoing>Flow_12d5yls</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0q6iu7q</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:inclusiveGateway id="Gateway_02j82yd">
+      <bpmn:incoming>Flow_11w09wj</bpmn:incoming>
+      <bpmn:incoming>Flow_15s4c5e</bpmn:incoming>
+      <bpmn:incoming>Flow_1fnr69b</bpmn:incoming>
+      <bpmn:incoming>Flow_0z63ujz</bpmn:incoming>
+      <bpmn:incoming>Flow_19rdhm9</bpmn:incoming>
+      <bpmn:outgoing>Flow_0j78lie</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:endEvent id="Event_1edjpsv">
+      <bpmn:incoming>Flow_12d5yls</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_12d5yls" sourceRef="Gateway_1x0kkd1" targetRef="Event_1edjpsv" />
+    <bpmn:sequenceFlow id="Flow_091cm4j" sourceRef="Activity_1pols5c" targetRef="Event_1hd52nw" />
+    <bpmn:endEvent id="Event_1hd52nw">
+      <bpmn:incoming>Flow_091cm4j</bpmn:incoming>
+      <bpmn:compensateEventDefinition id="CompensateEventDefinition_1vbzapa" />
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_03gblc4" attachedToRef="Activity_11tkxde">
+      <bpmn:compensateEventDefinition id="CompensateEventDefinition_00gnyts" />
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="Activity_0a6dh7s" name="Manage Account Record" zeebe:modelerTemplate="com.example.camunda.manage-account-record" zeebe:modelerTemplateVersion="7" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%230d6efd&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Crect x=&#39;2&#39; y=&#39;5&#39; width=&#39;20&#39; height=&#39;14&#39; rx=&#39;2&#39; ry=&#39;2&#39;%3E%3C/rect%3E%3Cline x1=&#39;2&#39; y1=&#39;10&#39; x2=&#39;22&#39; y2=&#39;10&#39;%3E%3C/line%3E%3Ccircle cx=&#39;8&#39; cy=&#39;15&#39; r=&#39;1&#39;%3E%3C/circle%3E%3Cpath d=&#39;M14 15h5&#39;%3E%3C/path%3E%3Cpath d=&#39;M16 3v4&#39;%3E%3C/path%3E%3Cpath d=&#39;M14 5h4&#39;%3E%3C/path%3E%3C/svg%3E" isForCompensation="true">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="manage-account-record" />
+        <zeebe:ioMapping>
+          <zeebe:input source="DELETE" target="operation" />
+          <zeebe:input source="=accountCrudResult.account.accountId" target="accountId" />
+          <zeebe:output source="=accountCrudResult" target="accountCrudResultDelete" />
+          <zeebe:output source="=operationStatus" target="operationStatusDelete" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_19yd38x" attachedToRef="Activity_1a148t8">
+      <bpmn:compensateEventDefinition id="CompensateEventDefinition_02gsyig" />
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="Activity_0vk2tqp" name="Manage Company Record" zeebe:modelerTemplate="com.example.camunda.manage-company-record" zeebe:modelerTemplateVersion="5" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%23198754&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Cpath d=&#39;M3 21h18&#39;%3E%3C/path%3E%3Crect x=&#39;5&#39; y=&#39;3&#39; width=&#39;14&#39; height=&#39;18&#39; rx=&#39;1&#39; ry=&#39;1&#39;%3E%3C/rect%3E%3Cpath d=&#39;M9 7h2&#39;%3E%3C/path%3E%3Cpath d=&#39;M13 7h2&#39;%3E%3C/path%3E%3Cpath d=&#39;M9 11h2&#39;%3E%3C/path%3E%3Cpath d=&#39;M13 11h2&#39;%3E%3C/path%3E%3Cpath d=&#39;M11 21v-4h2v4&#39;%3E%3C/path%3E%3C/svg%3E" isForCompensation="true">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="manage-company-record" />
+        <zeebe:ioMapping>
+          <zeebe:input source="DELETE" target="operation" />
+          <zeebe:input source="=companyCrudResult.company.companyId" target="companyId" />
+          <zeebe:output source="=companyCrudResult" target="companyCrudResultDelete" />
+          <zeebe:output source="=operationStatus" target="operationStatusDelete" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1xau67s" name="Manage Customer record" zeebe:modelerTemplate="com.example.camunda.manage-customer-record" zeebe:modelerTemplateVersion="6" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%236f42c1&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Ccircle cx=&#39;12&#39; cy=&#39;7&#39; r=&#39;4&#39;%3E%3C/circle%3E%3Cpath d=&#39;M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2&#39;%3E%3C/path%3E%3Cpath d=&#39;M3 11h4&#39;%3E%3C/path%3E%3Cpath d=&#39;M5 9v4&#39;%3E%3C/path%3E%3Cpath d=&#39;M17 11h4&#39;%3E%3C/path%3E%3C/svg%3E" isForCompensation="true">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="manage-customer-record" />
+        <zeebe:ioMapping>
+          <zeebe:input source="DELETE" target="operation" />
+          <zeebe:input source="=customerCrudResult.customer.customerId" target="customerId" />
+          <zeebe:output source="=customerCrudResult" target="customerCrudResultDelete" />
+          <zeebe:output source="=operationStatus" target="operationStatusDelete" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_0c4x2za" attachedToRef="Activity_0r0jqmo">
+      <bpmn:compensateEventDefinition id="CompensateEventDefinition_04oijqy" />
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="Activity_0ffrhnk" name="Manage Employee" zeebe:modelerTemplate="com.example.camunda.manage-employee-record" zeebe:modelerTemplateVersion="5" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%230f766e&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Crect x=&#39;3&#39; y=&#39;4&#39; width=&#39;18&#39; height=&#39;16&#39; rx=&#39;2&#39; ry=&#39;2&#39;%3E%3C/rect%3E%3Ccircle cx=&#39;8&#39; cy=&#39;10&#39; r=&#39;2&#39;%3E%3C/circle%3E%3Cpath d=&#39;M6 16c0-1.5 1-2.5 2-2.5s2 1 2 2.5&#39;%3E%3C/path%3E%3Cline x1=&#39;13&#39; y1=&#39;9&#39; x2=&#39;18&#39; y2=&#39;9&#39;%3E%3C/line%3E%3Cline x1=&#39;13&#39; y1=&#39;12&#39; x2=&#39;18&#39; y2=&#39;12&#39;%3E%3C/line%3E%3Cline x1=&#39;13&#39; y1=&#39;15&#39; x2=&#39;18&#39; y2=&#39;15&#39;%3E%3C/line%3E%3C/svg%3E" isForCompensation="true">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="manage-employee-record" />
+        <zeebe:ioMapping>
+          <zeebe:input source="DELETE" target="operation" />
+          <zeebe:input source="=employeeCrudResult.employee.employeeId" target="employeeId" />
+          <zeebe:output source="=employeeCrudResult" target="employeeCrudResultDelete" />
+          <zeebe:output source="=operationStatus" target="operationStatusDelete" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_0he5h8p" attachedToRef="Activity_18vdjzd">
+      <bpmn:compensateEventDefinition id="CompensateEventDefinition_00ngucu" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0q6iu7q" sourceRef="Gateway_1x0kkd1" targetRef="Activity_0rkfiea">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=createPolicy</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_19rdhm9" sourceRef="Activity_0rkfiea" targetRef="Gateway_02j82yd" />
+    <bpmn:boundaryEvent id="Event_1g9ycpx" attachedToRef="Activity_0rkfiea">
+      <bpmn:compensateEventDefinition id="CompensateEventDefinition_00ece0v" />
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="Activity_0j3ghd7" name="Delete Policy" isForCompensation="true">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="manage-insurance-policy" />
+        <zeebe:ioMapping>
+          <zeebe:input source="DELETE" target="operation" />
+          <zeebe:input source="=policyCrudResult.policy.policyId" target="policyId" />
+          <zeebe:output source="=policyCrudResult" target="policyCrudResult" />
+          <zeebe:output source="=operationStatus" target="policyOperationStatus" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_0rkfiea" name="Create Policy">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="manage-insurance-policy" />
+        <zeebe:ioMapping>
+          <zeebe:input source="CREATE" target="operation" />
+          <zeebe:input target="policyId" />
+          <zeebe:input source="PET" target="policyType" />
+          <zeebe:input source="ACTIVE" target="status" />
+          <zeebe:input source="2025-01-01" target="startDate" />
+          <zeebe:input target="endDate" />
+          <zeebe:input source="198" target="premiumAmount" />
+          <zeebe:input source="15000" target="coverageAmount" />
+          <zeebe:input target="notes" />
+          <zeebe:input source="CUSTOMER" target="holderType" />
+          <zeebe:input source="1001" target="customerId" />
+          <zeebe:input target="companyId" />
+          <zeebe:input source="Bob" target="petName" />
+          <zeebe:input source="Fish" target="petSpecies" />
+          <zeebe:input source="goldflish" target="petBreed" />
+          <zeebe:input source="33" target="petAge" />
+          <zeebe:output source="=policyCrudResult" target="policyCrudResult" />
+          <zeebe:output source="=operationStatus" target="policyOperationStatus" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0q6iu7q</bpmn:incoming>
+      <bpmn:outgoing>Flow_19rdhm9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:association id="Association_0b41oca" associationDirection="One" sourceRef="Event_03gblc4" targetRef="Activity_0a6dh7s" />
+    <bpmn:association id="Association_099zffx" associationDirection="One" sourceRef="Event_19yd38x" targetRef="Activity_0vk2tqp" />
+    <bpmn:association id="Association_14xtmiw" associationDirection="One" sourceRef="Event_0c4x2za" targetRef="Activity_1xau67s" />
+    <bpmn:association id="Association_13ab35n" associationDirection="One" sourceRef="Event_0he5h8p" targetRef="Activity_0ffrhnk" />
+    <bpmn:association id="Association_07g6cp9" associationDirection="One" sourceRef="Event_1g9ycpx" targetRef="Activity_0j3ghd7" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="DetTestConnec">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="150" y="100" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vls1ve_di" bpmnElement="Activity_11tkxde">
+        <dc:Bounds x="360" y="78" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1n3ho6r_di" bpmnElement="Activity_1a148t8">
+        <dc:Bounds x="360" y="270" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fhiywz_di" bpmnElement="Activity_0r0jqmo">
+        <dc:Bounds x="360" y="510" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06b0f9a_di" bpmnElement="Activity_18vdjzd">
+        <dc:Bounds x="360" y="730" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ip7ega_di" bpmnElement="Activity_1pols5c">
+        <dc:Bounds x="800" y="78" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1l0ncg2_di" bpmnElement="Gateway_1x0kkd1">
+        <dc:Bounds x="245" y="93" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_03r32mc_di" bpmnElement="Gateway_02j82yd">
+        <dc:Bounds x="685" y="93" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1edjpsv_di" bpmnElement="Event_1edjpsv">
+        <dc:Bounds x="392" y="-68" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1t5yh92_di" bpmnElement="Event_1hd52nw">
+        <dc:Bounds x="972" y="100" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_030lzov" bpmnElement="Activity_0a6dh7s">
+        <dc:Bounds x="480" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1402131" bpmnElement="Activity_0vk2tqp">
+        <dc:Bounds x="480" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0okzmy3" bpmnElement="Activity_1xau67s">
+        <dc:Bounds x="480" y="620" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0obm2z8" bpmnElement="Activity_0ffrhnk">
+        <dc:Bounds x="480" y="830" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0f1cfww_di" bpmnElement="Activity_0j3ghd7">
+        <dc:Bounds x="500" y="1080" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07pjuhi_di" bpmnElement="Activity_0rkfiea">
+        <dc:Bounds x="360" y="950" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0yo22ah_di" bpmnElement="Event_1g9ycpx">
+        <dc:Bounds x="392" y="1012" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1we3nfb_di" bpmnElement="Event_0he5h8p">
+        <dc:Bounds x="372" y="792" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1l2qlda_di" bpmnElement="Event_0c4x2za">
+        <dc:Bounds x="362" y="572" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_06afjc9_di" bpmnElement="Event_19yd38x">
+        <dc:Bounds x="402" y="332" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0vjeame_di" bpmnElement="Event_03gblc4">
+        <dc:Bounds x="392" y="140" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0vki6lc_di" bpmnElement="Flow_0vki6lc">
+        <di:waypoint x="186" y="118" />
+        <di:waypoint x="245" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0swvh3n_di" bpmnElement="Flow_0swvh3n">
+        <di:waypoint x="295" y="118" />
+        <di:waypoint x="360" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05iwwav_di" bpmnElement="Flow_05iwwav">
+        <di:waypoint x="270" y="143" />
+        <di:waypoint x="270" y="310" />
+        <di:waypoint x="360" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wjfhe7_di" bpmnElement="Flow_0wjfhe7">
+        <di:waypoint x="270" y="143" />
+        <di:waypoint x="270" y="550" />
+        <di:waypoint x="360" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xyoxz3_di" bpmnElement="Flow_1xyoxz3">
+        <di:waypoint x="270" y="143" />
+        <di:waypoint x="270" y="770" />
+        <di:waypoint x="360" y="770" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11w09wj_di" bpmnElement="Flow_11w09wj">
+        <di:waypoint x="460" y="118" />
+        <di:waypoint x="685" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15s4c5e_di" bpmnElement="Flow_15s4c5e">
+        <di:waypoint x="460" y="310" />
+        <di:waypoint x="710" y="310" />
+        <di:waypoint x="710" y="143" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fnr69b_di" bpmnElement="Flow_1fnr69b">
+        <di:waypoint x="460" y="550" />
+        <di:waypoint x="710" y="550" />
+        <di:waypoint x="710" y="143" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z63ujz_di" bpmnElement="Flow_0z63ujz">
+        <di:waypoint x="460" y="770" />
+        <di:waypoint x="710" y="770" />
+        <di:waypoint x="710" y="143" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0j78lie_di" bpmnElement="Flow_0j78lie">
+        <di:waypoint x="735" y="118" />
+        <di:waypoint x="800" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12d5yls_di" bpmnElement="Flow_12d5yls">
+        <di:waypoint x="270" y="93" />
+        <di:waypoint x="270" y="-50" />
+        <di:waypoint x="392" y="-50" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_091cm4j_di" bpmnElement="Flow_091cm4j">
+        <di:waypoint x="900" y="118" />
+        <di:waypoint x="972" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0q6iu7q_di" bpmnElement="Flow_0q6iu7q">
+        <di:waypoint x="270" y="143" />
+        <di:waypoint x="270" y="990" />
+        <di:waypoint x="360" y="990" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19rdhm9_di" bpmnElement="Flow_19rdhm9">
+        <di:waypoint x="460" y="990" />
+        <di:waypoint x="710" y="990" />
+        <di:waypoint x="710" y="143" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0b41oca_di" bpmnElement="Association_0b41oca">
+        <di:waypoint x="410" y="176" />
+        <di:waypoint x="410" y="210" />
+        <di:waypoint x="480" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_099zffx_di" bpmnElement="Association_099zffx">
+        <di:waypoint x="420" y="368" />
+        <di:waypoint x="420" y="410" />
+        <di:waypoint x="480" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_14xtmiw_di" bpmnElement="Association_14xtmiw">
+        <di:waypoint x="380" y="608" />
+        <di:waypoint x="380" y="660" />
+        <di:waypoint x="480" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_13ab35n_di" bpmnElement="Association_13ab35n">
+        <di:waypoint x="390" y="828" />
+        <di:waypoint x="390" y="870" />
+        <di:waypoint x="480" y="870" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_07g6cp9_di" bpmnElement="Association_07g6cp9">
+        <di:waypoint x="410" y="1048" />
+        <di:waypoint x="410" y="1120" />
+        <di:waypoint x="500" y="1120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

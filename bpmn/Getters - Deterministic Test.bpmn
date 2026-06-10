@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="ce5fd89" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.8.0">
+  <bpmn:process id="GettersTest" name="Getters - Deterministic Test" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Connector Getters Test">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formId="connector-getters-test-1hdm72n" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1qkt2tn</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_1tdcg02">
+      <bpmn:incoming>Flow_00398p8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1qkt2tn" sourceRef="StartEvent_1" targetRef="Gateway_1xxx0bg" />
+    <bpmn:sequenceFlow id="Flow_0jqv9c3" sourceRef="Gateway_1xxx0bg" targetRef="Activity_07fz4p3">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=searchEmployee</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_07fz4p3" name="Search for Employee" zeebe:modelerTemplate="com.example.camunda.search-employee" zeebe:modelerTemplateVersion="3" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%23007bff&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Ccircle cx=&#39;11&#39; cy=&#39;11&#39; r=&#39;8&#39;%3E%3C/circle%3E%3Cpath d=&#39;m21 21-4.35-4.35&#39;%3E%3C/path%3E%3Cpath d=&#39;M9 11a2 2 0 1 0 4 0a2 2 0 0 0-4 0&#39;%3E%3C/path%3E%3C/svg%3E">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="search-employee" />
+        <zeebe:ioMapping>
+          <zeebe:input source="JOB_TITLE" target="searchMode" />
+          <zeebe:input source="Sales" target="jobTitle" />
+          <zeebe:input source="true" target="fuzzyMatching" />
+          <zeebe:output source="=employeeSearchResult" target="employeeSearchResponse" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0jqv9c3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0elof4g</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0ggkxl0" sourceRef="Gateway_1xxx0bg" targetRef="Activity_10suc15">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=searchCompany</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0elof4g" sourceRef="Activity_07fz4p3" targetRef="Gateway_0e9xbf4" />
+    <bpmn:inclusiveGateway id="Gateway_1xxx0bg" default="Flow_0c8dcvt">
+      <bpmn:incoming>Flow_1qkt2tn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jqv9c3</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ggkxl0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0qo8snw</bpmn:outgoing>
+      <bpmn:outgoing>Flow_17i6ax2</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0c8dcvt</bpmn:outgoing>
+      <bpmn:outgoing>Flow_19s85sl</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:inclusiveGateway id="Gateway_0e9xbf4">
+      <bpmn:incoming>Flow_0elof4g</bpmn:incoming>
+      <bpmn:incoming>Flow_0o1t8bf</bpmn:incoming>
+      <bpmn:incoming>Flow_1snxt7h</bpmn:incoming>
+      <bpmn:incoming>Flow_19bmmeb</bpmn:incoming>
+      <bpmn:incoming>Flow_0yjoq7n</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xs4h1n</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0o1t8bf" sourceRef="Activity_10suc15" targetRef="Gateway_0e9xbf4" />
+    <bpmn:sequenceFlow id="Flow_1xs4h1n" sourceRef="Gateway_0e9xbf4" targetRef="Activity_1ogo52c" />
+    <bpmn:sequenceFlow id="Flow_00398p8" sourceRef="Activity_1ogo52c" targetRef="Event_1tdcg02" />
+    <bpmn:userTask id="Activity_1ogo52c" name="See Results">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xs4h1n</bpmn:incoming>
+      <bpmn:outgoing>Flow_00398p8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_10suc15" name="Search for Company" zeebe:modelerTemplate="com.example.camunda.query-for-company" zeebe:modelerTemplateVersion="3" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%2328a745&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Cpath d=&#39;M3 21h18&#39;%3E%3C/path%3E%3Cpath d=&#39;M5 21V7l8-4v18&#39;%3E%3C/path%3E%3Cpath d=&#39;M19 21V11l-6-4&#39;%3E%3C/path%3E%3C/svg%3E">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="query-for-company" />
+        <zeebe:ioMapping>
+          <zeebe:input source="COMPANY_NAME" target="searchMode" />
+          <zeebe:input source="Fustion Technologies" target="companyName" />
+          <zeebe:input source="true" target="fuzzyMatching" />
+          <zeebe:output source="=companySearchResult" target="searchCompanyResult" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ggkxl0</bpmn:incoming>
+      <bpmn:outgoing>Flow_0o1t8bf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0qo8snw" sourceRef="Gateway_1xxx0bg" targetRef="Activity_1wt4195">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=searchCustomer</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_1wt4195" name="Search for Customer" zeebe:modelerTemplate="com.example.camunda.match-customer-with-dri" zeebe:modelerTemplateVersion="5" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%23007bff&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Cpath d=&#39;M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2&#39;%3E%3C/path%3E%3Ccircle cx=&#39;9&#39; cy=&#39;7&#39; r=&#39;4&#39;%3E%3C/circle%3E%3Cpath d=&#39;M22 21v-2a4 4 0 0 0-3-3.87&#39;%3E%3C/path%3E%3Cpath d=&#39;M16 3.13a4 4 0 0 1 0 7.75&#39;%3E%3C/path%3E%3C/svg%3E">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="match-customer-with-dri" />
+        <zeebe:ioMapping>
+          <zeebe:input source="CUSTOMER_NAME" target="lookupMode" />
+          <zeebe:input source="Johnathan Doe" target="customerName" />
+          <zeebe:input source="true" target="allowMultiple" />
+          <zeebe:input source="true" target="fuzzyMatching" />
+          <zeebe:output source="=matchingResult" target="customerSearchResult" />
+          <zeebe:output source="=customerId" target="customerId" />
+          <zeebe:output source="=customerName" target="customerName" />
+          <zeebe:output source="=customerAddress" target="customerAddress" />
+          <zeebe:output source="=customerTrustLevel" target="customerTrustLevel" />
+          <zeebe:output source="=employeeId" target="employeeId" />
+          <zeebe:output source="=employeeName" target="employeeName" />
+          <zeebe:output source="=matchStatus" target="matchStatus" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0qo8snw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1snxt7h</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1snxt7h" sourceRef="Activity_1wt4195" targetRef="Gateway_0e9xbf4" />
+    <bpmn:sequenceFlow id="Flow_17i6ax2" sourceRef="Gateway_1xxx0bg" targetRef="Activity_1ayjdml">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=searchAccount</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_1ayjdml" name="Search for Account" zeebe:modelerTemplate="com.example.camunda.search-account" zeebe:modelerTemplateVersion="4" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%23007bff&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Crect x=&#39;2&#39; y=&#39;7&#39; width=&#39;20&#39; height=&#39;13&#39; rx=&#39;2&#39; ry=&#39;2&#39;%3E%3C/rect%3E%3Cline x1=&#39;16&#39; y1=&#39;3&#39; x2=&#39;8&#39; y2=&#39;3&#39;%3E%3C/line%3E%3Cline x1=&#39;12&#39; y1=&#39;7&#39; x2=&#39;12&#39; y2=&#39;3&#39;%3E%3C/line%3E%3Ccircle cx=&#39;8&#39; cy=&#39;13&#39; r=&#39;1&#39;%3E%3C/circle%3E%3Ccircle cx=&#39;12&#39; cy=&#39;13&#39; r=&#39;1&#39;%3E%3C/circle%3E%3Ccircle cx=&#39;16&#39; cy=&#39;13&#39; r=&#39;1&#39;%3E%3C/circle%3E%3C/svg%3E">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="search-account" />
+        <zeebe:ioMapping>
+          <zeebe:input source="FLEXIBLE" target="searchMode" />
+          <zeebe:input target="accountId" />
+          <zeebe:input target="customerAccountId" />
+          <zeebe:input source="SA-1001-NDL" target="accountNumber" />
+          <zeebe:input target="customerId" />
+          <zeebe:output source="=accountSearchResult" target="accountSearchResult" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_17i6ax2</bpmn:incoming>
+      <bpmn:outgoing>Flow_19bmmeb</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_19bmmeb" sourceRef="Activity_1ayjdml" targetRef="Gateway_0e9xbf4" />
+    <bpmn:endEvent id="Event_02lvh3w">
+      <bpmn:incoming>Flow_0c8dcvt</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0c8dcvt" sourceRef="Gateway_1xxx0bg" targetRef="Event_02lvh3w" />
+    <bpmn:sequenceFlow id="Flow_19s85sl" sourceRef="Gateway_1xxx0bg" targetRef="Activity_1norx3p">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=searchPolicy</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0yjoq7n" sourceRef="Activity_1norx3p" targetRef="Gateway_0e9xbf4" />
+    <bpmn:serviceTask id="Activity_1norx3p" name="Search for Insurance Record" zeebe:modelerTemplate="com.example.camunda.manage-insurance-policy" zeebe:modelerTemplateVersion="4" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%230d6efd&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Cpath d=&#39;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&#39;%3E%3C/path%3E%3C/svg%3E">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="manage-insurance-policy" />
+        <zeebe:ioMapping>
+          <zeebe:input source="QUERY" target="operation" />
+          <zeebe:input target="policyId" />
+          <zeebe:input source="100" target="customerId" />
+          <zeebe:input target="companyId" />
+          <zeebe:input target="policyType" />
+          <zeebe:input target="status" />
+          <zeebe:input target="holderType" />
+          <zeebe:output source="=policyCrudResult" target="policyCrudResult" />
+          <zeebe:output source="=operationStatus" target="policyOperationStatus" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_19s85sl</bpmn:incoming>
+      <bpmn:outgoing>Flow_0yjoq7n</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="GettersTest">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="150" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="123" y="143" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1tdcg02_di" bpmnElement="Event_1tdcg02">
+        <dc:Bounds x="812" y="100" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0xo9qkx_di" bpmnElement="Activity_07fz4p3">
+        <dc:Bounds x="360" y="78" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1onusgv_di" bpmnElement="Gateway_1xxx0bg">
+        <dc:Bounds x="245" y="93" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0t521t2_di" bpmnElement="Gateway_0e9xbf4">
+        <dc:Bounds x="525" y="93" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0y79t4a_di" bpmnElement="Activity_1ogo52c">
+        <dc:Bounds x="640" y="78" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01ipyn1_di" bpmnElement="Activity_10suc15">
+        <dc:Bounds x="360" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jvy8yg_di" bpmnElement="Activity_1wt4195">
+        <dc:Bounds x="360" y="300" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vpg3xc_di" bpmnElement="Activity_1ayjdml">
+        <dc:Bounds x="360" y="410" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_02lvh3w_di" bpmnElement="Event_02lvh3w">
+        <dc:Bounds x="392" y="-28" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ya9jp8_di" bpmnElement="Activity_1norx3p">
+        <dc:Bounds x="360" y="530" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1qkt2tn_di" bpmnElement="Flow_1qkt2tn">
+        <di:waypoint x="186" y="118" />
+        <di:waypoint x="245" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jqv9c3_di" bpmnElement="Flow_0jqv9c3">
+        <di:waypoint x="295" y="118" />
+        <di:waypoint x="360" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ggkxl0_di" bpmnElement="Flow_0ggkxl0">
+        <di:waypoint x="270" y="143" />
+        <di:waypoint x="270" y="230" />
+        <di:waypoint x="360" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0elof4g_di" bpmnElement="Flow_0elof4g">
+        <di:waypoint x="460" y="118" />
+        <di:waypoint x="525" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o1t8bf_di" bpmnElement="Flow_0o1t8bf">
+        <di:waypoint x="460" y="230" />
+        <di:waypoint x="550" y="230" />
+        <di:waypoint x="550" y="143" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xs4h1n_di" bpmnElement="Flow_1xs4h1n">
+        <di:waypoint x="575" y="118" />
+        <di:waypoint x="640" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00398p8_di" bpmnElement="Flow_00398p8">
+        <di:waypoint x="740" y="118" />
+        <di:waypoint x="812" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qo8snw_di" bpmnElement="Flow_0qo8snw">
+        <di:waypoint x="270" y="143" />
+        <di:waypoint x="270" y="340" />
+        <di:waypoint x="360" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1snxt7h_di" bpmnElement="Flow_1snxt7h">
+        <di:waypoint x="460" y="340" />
+        <di:waypoint x="550" y="340" />
+        <di:waypoint x="550" y="143" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17i6ax2_di" bpmnElement="Flow_17i6ax2">
+        <di:waypoint x="270" y="143" />
+        <di:waypoint x="270" y="450" />
+        <di:waypoint x="360" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19bmmeb_di" bpmnElement="Flow_19bmmeb">
+        <di:waypoint x="460" y="450" />
+        <di:waypoint x="550" y="450" />
+        <di:waypoint x="550" y="143" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c8dcvt_di" bpmnElement="Flow_0c8dcvt">
+        <di:waypoint x="270" y="93" />
+        <di:waypoint x="270" y="-10" />
+        <di:waypoint x="392" y="-10" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19s85sl_di" bpmnElement="Flow_19s85sl">
+        <di:waypoint x="270" y="143" />
+        <di:waypoint x="270" y="570" />
+        <di:waypoint x="360" y="570" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yjoq7n_di" bpmnElement="Flow_0yjoq7n">
+        <di:waypoint x="460" y="570" />
+        <di:waypoint x="550" y="570" />
+        <di:waypoint x="550" y="143" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
