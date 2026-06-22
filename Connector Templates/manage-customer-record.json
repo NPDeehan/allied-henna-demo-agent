@@ -2,8 +2,8 @@
   "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
   "name": "Manage Customer Record",
   "id": "com.example.camunda.manage-customer-record",
-  "version": 6,
-  "description": "Create, update, or delete customer records with operation-aware form fields. Customer ID is auto-generated on CREATE when omitted. Trust level accepts L1, L2, or L3 (or a FEEL runtime expression that resolves to one of these).",
+  "version": 7,
+  "description": "Create, update, or delete customer records with operation-aware form fields. Customer ID is auto-generated on CREATE when omitted. Email is required on CREATE. Trust level accepts L1, L2, or L3 (or a FEEL runtime expression that resolves to one of these).",
   "category": {
     "id": "connectors",
     "name": "Connectors"
@@ -194,6 +194,47 @@
       "binding": {
         "type": "zeebe:input",
         "name": "address"
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "UPDATE",
+        "type": "simple"
+      }
+    },
+    {
+      "id": "emailCreate",
+      "label": "Email",
+      "description": "Required for CREATE. Must be a valid email address.",
+      "type": "Text",
+      "group": "input",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "email"
+      },
+      "constraints": {
+        "notEmpty": true,
+        "pattern": "^([A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+|=.+)$"
+      },
+      "condition": {
+        "property": "operation",
+        "equals": "CREATE",
+        "type": "simple"
+      }
+    },
+    {
+      "id": "emailUpdate",
+      "label": "Email",
+      "description": "Optional for UPDATE. Must be a valid email address when provided.",
+      "type": "Text",
+      "group": "input",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "email"
+      },
+      "constraints": {
+        "pattern": "^$|([A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+|=.+)$"
       },
       "condition": {
         "property": "operation",

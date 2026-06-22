@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
   "name": "Manage Insurance Policy",
   "id": "com.example.camunda.manage-insurance-policy",
-  "version": 4,
+  "version": 5,
   "description": "Create, update, delete, or query insurance policies. Policies can be held by a customer or an external company. Type-specific fields appear automatically based on the selected policy type.",
   "category": {
     "id": "connectors",

@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
   "name": "Search Account",
   "id": "com.example.camunda.search-account",
-  "version": 4,
+  "version": 5,
   "description": "Service task to search for accounts by accountId and/or customerId and return account details with customer roles",
   "category": {
     "id": "connectors",
@@ -82,7 +82,7 @@
         "name": "accountId"
       },
       "constraints": {
-        "notEmpty": true
+        "notEmpty": false
       },
       "condition": {
         "property": "searchMode",
@@ -122,7 +122,7 @@
         "name": "customerAccountId"
       },
       "constraints": {
-        "notEmpty": true
+        "notEmpty": false
       },
       "condition": {
         "property": "searchMode",
@@ -162,7 +162,7 @@
         "name": "accountNumber"
       },
       "constraints": {
-        "notEmpty": true
+        "notEmpty": false
       },
       "condition": {
         "property": "searchMode",
@@ -202,7 +202,7 @@
         "name": "customerId"
       },
       "constraints": {
-        "notEmpty": true
+        "notEmpty": false
       },
       "condition": {
         "property": "searchMode",

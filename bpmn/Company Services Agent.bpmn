@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="204af60" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="ffe380b" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
   <bpmn:process id="CompanyServiceAgent" name="Company Services Agent" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" name="Input From Camunda">
       <bpmn:extensionElements>
@@ -18,12 +18,12 @@
           <zeebe:input source="{{secrets.AWS_SECRET_KEY}}" target="provider.bedrock.authentication.secretKey" />
           <zeebe:input source="us.anthropic.claude-sonnet-4-6" target="provider.bedrock.model.model" />
           <zeebe:input source="=0.3" target="provider.bedrock.model.parameters.temperature" />
-          <zeebe:input source="=&#34;You are the **Allied Henna Agent**, a helpful, generic chat agent that can handle a wide variety of customer requests using your own domain knowledge **and** the tools explicitly provided to you at runtime.&#10;&#10;You have access to loads of tools that access, update and create information in the Allied Henna system and you&#39;re goal is to take a request from a user and then to answer that the answer that question and any followup questions using the tools provided. &#10;&#10;The tools are provided, so you should always prefer them instead of guessing an answer. You can call the same tool multiple times by providing different input values.&#10;If a given tool needs a specific input utilize the other tools to find out this input, espcially any kind of ID or Name. You can generate things like notes or summaries&#10;&#10;Users have multiple ways of communicating with you, They can **only** see your response if you use the tools provided so make very sure that you ALWAYS communication back to them using the same medium used to ask the initial question. Never assume that they can see your output message.&#10;&#10;Don&#39;t guess any tools which were not explicitly configured. If no tool matches the request, try to generate an answer. If you&#39;re not able to find a good answer, return with a message stating why you&#39;re not able to.&#10;&#10;When dealing with requests that come through slack **make sure** to **always** respond using slack event if it&#39;s to say that you&#39;re not going to be able to help. Never finish before informing the user&#10;&#10;Wrap minimal, inspectable reasoning in *exactly* this XML template:&#10;&#10;&#60;thinking&#62;&#10;&#60;context&#62;…briefly state the customer’s need and current state…&#60;/context&#62;&#10;&#60;reflection&#62;…list candidate tools, justify which you will call next and why…&#60;/reflection&#62;&#10;&#60;/thinking&#62;&#10;&#10;Reveal **no** additional private reasoning outside these tags.&#34;" target="data.systemPrompt.prompt" />
+          <zeebe:input source="=&#34;You are the **Allied Henna Agent**, a helpful chat agent that handles a wide variety of customer requests using your domain knowledge **and** the tools explicitly provided to you at runtime.&#10;&#10;## Your Role&#10;&#10;You have access to tools that read, update, and create information in the Allied Henna system. Your goal is to take a request from a user and answer it — along with any follow-up questions — using those tools.&#10;&#10;Always prefer tools over guessing. You can call the same tool multiple times with different inputs. When appropriate, call tools in parallel for efficiency. If a tool requires a specific ID or name you do not yet have, use other tools to look it up first.&#10;&#10;## Tool Use Rules&#10;&#10;1. **Only use tools that have been explicitly configured.** Never guess or invent tool names.&#10;2. **If no tool matches the request**, attempt to answer from your own knowledge. If you cannot, use the appropriate communication tool to tell the user why.&#10;3. You may call the same tool more than once with different inputs.&#10;4. When it makes sense, call multiple tools in parallel.&#10;&#10;## ⚠️ Critical: How Users Receive Your Responses&#10;&#10;&#62; **Users cannot see your assistant text under any circumstances.** Your words only reach the user when delivered through a tool call.&#10;&#10;**This means:**&#10;&#10;- **Never write your answer in assistant text.** Writing it out in text does NOT communicate it to the user — it is invisible to them.&#10;- **Every message to the user — without exception — must be sent by calling a communication tool.**&#10;- This applies to all responses: answers, summaries, clarifications, partial updates, and error messages.&#10;- **You must call a communication tool BEFORE ending the process.** Finishing without calling a communication tool means the user received nothing.&#10;- Selecting no tool is only valid as the very last action — and only after a communication tool has already been called in the same turn.&#10;&#10;### Choosing the Right Communication Tool&#10;&#10;Three communication tools are available. Always use **`DisplayAnswerToUser`** as your default unless the incoming request contains unambiguous evidence it arrived via a specific channel.&#10;&#10;| If the request clearly came from… | Use… |&#10;|---|---|&#10;| Slack (e.g. contains `channel`, `thread_ts`, or Slack event fields) | `Activity_1iq511p` (Slack) |&#10;| Email (e.g. contains `from`, `subject`, `reply-to` fields) | `Activity_07cwrgh` (Email) |&#10;| Anything else, or if the origin is unclear | `DisplayAnswerToUser` ← **default** |&#10;&#10;**Do not assume a channel.** If the source is ambiguous, always use `DisplayAnswerToUser`. Never use a channel-specific tool unless the evidence in the request payload is unambiguous.&#10;&#10;## Thinking Format&#10;&#10;Wrap your reasoning in exactly this Markdown template. Reveal no additional private reasoning outside this block.&#10;&#10;```markdown&#10;## Thinking&#10;&#10;**Context:** Briefly state the customer&#39;s need and current state.&#10;&#10;**Reflection:** List candidate tools, justify which you will call next and why. Note whether the answer required multiple steps or was resolved quickly, and why.&#10;```&#34;" target="data.systemPrompt.prompt" />
           <zeebe:input source="=questionFromUser" target="data.userPrompt.prompt" />
           <zeebe:input target="agentContext" />
           <zeebe:input source="in-process" target="data.memory.storage.type" />
           <zeebe:input source="=20" target="data.memory.contextWindowSize" />
-          <zeebe:input source="=10" target="data.limits.maxModelCalls" />
+          <zeebe:input source="=20" target="data.limits.maxModelCalls" />
           <zeebe:input source="WAIT_FOR_TOOL_CALL_RESULTS" target="data.events.behavior" />
           <zeebe:input source="text" target="data.response.format.type" />
           <zeebe:input source="=false" target="data.response.format.parseJson" />
@@ -88,7 +88,7 @@
           </zeebe:ioMapping>
         </bpmn:extensionElements>
       </bpmn:serviceTask>
-      <bpmn:serviceTask id="Activity_1vzl62d" name="Create Customer Records" zeebe:modelerTemplate="com.example.camunda.manage-customer-record" zeebe:modelerTemplateVersion="6" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%236f42c1&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Ccircle cx=&#39;12&#39; cy=&#39;7&#39; r=&#39;4&#39;%3E%3C/circle%3E%3Cpath d=&#39;M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2&#39;%3E%3C/path%3E%3Cpath d=&#39;M3 11h4&#39;%3E%3C/path%3E%3Cpath d=&#39;M5 9v4&#39;%3E%3C/path%3E%3Cpath d=&#39;M17 11h4&#39;%3E%3C/path%3E%3C/svg%3E">
+      <bpmn:serviceTask id="Activity_1vzl62d" name="Create Customer Records" zeebe:modelerTemplate="com.example.camunda.manage-customer-record" zeebe:modelerTemplateVersion="7" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%236f42c1&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Ccircle cx=&#39;12&#39; cy=&#39;7&#39; r=&#39;4&#39;%3E%3C/circle%3E%3Cpath d=&#39;M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2&#39;%3E%3C/path%3E%3Cpath d=&#39;M3 11h4&#39;%3E%3C/path%3E%3Cpath d=&#39;M5 9v4&#39;%3E%3C/path%3E%3Cpath d=&#39;M17 11h4&#39;%3E%3C/path%3E%3C/svg%3E">
         <bpmn:documentation>You can use this tool to create a new customer record</bpmn:documentation>
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="manage-customer-record" />
@@ -97,31 +97,11 @@
             <zeebe:input target="customerId" />
             <zeebe:input source="=fromAi(toolCall.customerName, &#34;This is the name of the customer you want to create&#34;)" target="customerName" />
             <zeebe:input source="=fromAi(toolCall.address, &#34;This is the address of the customer you want to create&#34;)" target="address" />
+            <zeebe:input source="=fromAi(toolCall.customerEmail, &#34;This is the email address that the customer can be readed at.&#34;)" target="email" />
             <zeebe:input source="=fromAi(toolCall.employeeId, &#34;This is the Id of the employee responsible for this company. That employee must exist in the system&#34;)" target="employeeId" />
             <zeebe:input source="=fromAi(toolCall.trustLevel, &#34;This is the trustlevel of the customer you want to create. it can be L1, L2, or L3.&#34;)" target="trustLevel" />
             <zeebe:output source="=customerCrudResult" target="toolCallResult" />
             <zeebe:output source="=operationStatus" target="operationStatus" />
-          </zeebe:ioMapping>
-        </bpmn:extensionElements>
-      </bpmn:serviceTask>
-      <bpmn:serviceTask id="Activity_0r13qoz" name="Get Customer Data" zeebe:modelerTemplate="com.example.camunda.match-customer-with-dri" zeebe:modelerTemplateVersion="5" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%23007bff&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Cpath d=&#39;M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2&#39;%3E%3C/path%3E%3Ccircle cx=&#39;9&#39; cy=&#39;7&#39; r=&#39;4&#39;%3E%3C/circle%3E%3Cpath d=&#39;M22 21v-2a4 4 0 0 0-3-3.87&#39;%3E%3C/path%3E%3Cpath d=&#39;M16 3.13a4 4 0 0 1 0 7.75&#39;%3E%3C/path%3E%3C/svg%3E">
-        <bpmn:documentation>use this tool to search for the customers who match the search criteria</bpmn:documentation>
-        <bpmn:extensionElements>
-          <zeebe:taskDefinition type="match-customer-with-dri" />
-          <zeebe:ioMapping>
-            <zeebe:input source="ID_OR_NAME" target="lookupMode" />
-            <zeebe:input source="=fromAi(toolCall.customerId, &#34;This is the Id of the customer you&#39;re looking for. If you&#39;re not useing this criteria leave it null&#34;)" target="customerId" />
-            <zeebe:input source="=fromAi(toolCall.customerName, &#34;This is the Name of the customer you&#39;re looking for. If you&#39;re not useing this criteria leave it null&#34;)" target="customerName" />
-            <zeebe:input source="true" target="allowMultiple" />
-            <zeebe:input source="true" target="fuzzyMatching" />
-            <zeebe:output source="=matchingResult" target="toolCallResult" />
-            <zeebe:output source="=customerId" target="customerId" />
-            <zeebe:output source="=customerName" target="customerName" />
-            <zeebe:output source="=customerAddress" target="customerAddress" />
-            <zeebe:output source="=customerTrustLevel" target="customerTrustLevel" />
-            <zeebe:output source="=employeeId" target="employeeId" />
-            <zeebe:output source="=employeeName" target="employeeName" />
-            <zeebe:output source="=matchStatus" target="matchStatus" />
           </zeebe:ioMapping>
         </bpmn:extensionElements>
       </bpmn:serviceTask>
@@ -175,8 +155,8 @@
           </zeebe:ioMapping>
         </bpmn:extensionElements>
       </bpmn:serviceTask>
-      <bpmn:userTask id="Activity_08nyj4v" name="Display Answer to user">
-        <bpmn:documentation>Use this tool to display the answer to the questoin the use has asked via the Camunda App. Default option if communcation method is unclear.</bpmn:documentation>
+      <bpmn:userTask id="DisplayAnswerToUser" name="Display Answer to user">
+        <bpmn:documentation>Use this tool to display the answer to the question that  has been asked or to get clarificiation on the request via the Camunda App. This is the Default  communcation method for cases where the origin of the request doesn't match other communication methods.</bpmn:documentation>
         <bpmn:extensionElements>
           <zeebe:userTask />
           <zeebe:formDefinition formId="display-answer-to-user-05en478" />
@@ -468,15 +448,16 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
           </zeebe:ioMapping>
         </bpmn:extensionElements>
       </bpmn:serviceTask>
-      <bpmn:serviceTask id="Activity_0ckiq6l" name="Update Customer Records" zeebe:modelerTemplate="com.example.camunda.manage-customer-record" zeebe:modelerTemplateVersion="6" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%236f42c1&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Ccircle cx=&#39;12&#39; cy=&#39;7&#39; r=&#39;4&#39;%3E%3C/circle%3E%3Cpath d=&#39;M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2&#39;%3E%3C/path%3E%3Cpath d=&#39;M3 11h4&#39;%3E%3C/path%3E%3Cpath d=&#39;M5 9v4&#39;%3E%3C/path%3E%3Cpath d=&#39;M17 11h4&#39;%3E%3C/path%3E%3C/svg%3E">
-        <bpmn:documentation>You can use this tool to update a new customer record. The only input field that is required is the customerId. Only update the others if you want to change the record.</bpmn:documentation>
+      <bpmn:serviceTask id="Activity_0ckiq6l" name="Update Customer Records" zeebe:modelerTemplate="com.example.camunda.manage-customer-record" zeebe:modelerTemplateVersion="7" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%236f42c1&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Ccircle cx=&#39;12&#39; cy=&#39;7&#39; r=&#39;4&#39;%3E%3C/circle%3E%3Cpath d=&#39;M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2&#39;%3E%3C/path%3E%3Cpath d=&#39;M3 11h4&#39;%3E%3C/path%3E%3Cpath d=&#39;M5 9v4&#39;%3E%3C/path%3E%3Cpath d=&#39;M17 11h4&#39;%3E%3C/path%3E%3C/svg%3E">
+        <bpmn:documentation>You can use this tool to update a customer record. The only input field that is required is the customerId. Only update the others if you want to change the record.</bpmn:documentation>
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="manage-customer-record" />
           <zeebe:ioMapping>
-            <zeebe:input source="CREATE" target="operation" />
+            <zeebe:input source="UPDATE" target="operation" />
             <zeebe:input source="=fromAi(toolCall.customerId, &#34;This is the customerId of the record you&#39;d like to update&#34;)" target="customerId" />
             <zeebe:input source="=fromAi(toolCall.customerName, &#34;This is the name of the customer you want to create&#34;)" target="customerName" />
             <zeebe:input source="=fromAi(toolCall.address, &#34;This is the address of the customer you want to create&#34;)" target="address" />
+            <zeebe:input source="=fromAi(toolCall.customerEmail, &#34;This is the email address that the customer can be readed at.&#34;)" target="email" />
             <zeebe:input source="=fromAi(toolCall.employeeId, &#34;This is the Id of the employee responsible for this company. That employee must exist in the system&#34;)" target="employeeId" />
             <zeebe:input source="=fromAi(toolCall.trustLevel, &#34;This is the trustlevel of the customer you want to create. it can be L1, L2, or L3.&#34;)" target="trustLevel" />
             <zeebe:output source="=customerCrudResult" target="toolCallResult" />
@@ -485,7 +466,7 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
         </bpmn:extensionElements>
       </bpmn:serviceTask>
       <bpmn:serviceTask id="Activity_00mzpyq" name="Create Pet Insurance Policy" zeebe:modelerTemplate="com.example.camunda.manage-insurance-policy" zeebe:modelerTemplateVersion="4" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%230d6efd&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Cpath d=&#39;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&#39;%3E%3C/path%3E%3C/svg%3E">
-        <bpmn:documentation>You can use this tool to Create details of a new insurance policies held by a customers or company</bpmn:documentation>
+        <bpmn:documentation>You can use this tool to Create details of a new Pet insurance policies held by a customers or company</bpmn:documentation>
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="manage-insurance-policy" />
           <zeebe:ioMapping>
@@ -606,6 +587,205 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
           </zeebe:ioMapping>
         </bpmn:extensionElements>
       </bpmn:serviceTask>
+      <bpmn:boundaryEvent id="Event_0v7ueoj" name="Wait for 5 Mins" attachedToRef="DisplayAnswerToUser">
+        <bpmn:extensionElements>
+          <zeebe:ioMapping>
+            <zeebe:output source="={&#10;  &#34;SystemUpdate&#34; : &#34;No response after 5 minutes.&#34;&#10;}" target="toolCallResult" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:timerEventDefinition id="TimerEventDefinition_18dlppt">
+          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5M</bpmn:timeDuration>
+        </bpmn:timerEventDefinition>
+      </bpmn:boundaryEvent>
+      <bpmn:serviceTask id="Activity_1ip58jt" name="Update Purchase Order" zeebe:modelerTemplate="com.example.camunda.manage-purchase-order" zeebe:modelerTemplateVersion="2" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%23198754&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Cpath d=&#39;M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z&#39;%3E%3C/path%3E%3Cpolyline points=&#39;14 2 14 8 20 8&#39;%3E%3C/polyline%3E%3Cline x1=&#39;16&#39; y1=&#39;13&#39; x2=&#39;8&#39; y2=&#39;13&#39;%3E%3C/line%3E%3Cline x1=&#39;16&#39; y1=&#39;17&#39; x2=&#39;8&#39; y2=&#39;17&#39;%3E%3C/line%3E%3C/svg%3E">
+        <bpmn:documentation>Use this tool to Update the details of a purchase order. The only required field is the orderId leave the others empty if you don't want to change those details.</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="manage-purchase-order" />
+          <zeebe:ioMapping>
+            <zeebe:input source="UPDATE" target="operation" />
+            <zeebe:input source="=fromAi(toolCall.orderId, &#34;This is the ideo of the order this item should be added to. &#34;)" target="orderId" />
+            <zeebe:input target="orderNumber" />
+            <zeebe:input source="=fromAi(toolCall.status, &#34;This is the status of the purchase order. Allowed values: DRAFT, SUBMITTED, APPROVED, FULFILLED, CANCELLED. &#34;)" target="status" />
+            <zeebe:input source="=fromAi(toolCall.customerId, &#34;This is the Id of the customer that the purchase order is intended for&#34;)" target="customerId" />
+            <zeebe:input source="=fromAi(toolCall.orderdate, &#34;This is the order date - which is today formatted YYYY-MM-DD.&#34;)" target="orderDate" />
+            <zeebe:input target="expectedDeliveryDate" />
+            <zeebe:input source="=fromAi(toolCall.notes, &#34;These are the notes to summarize details of how this purchase order came about.&#34;)" target="notes" />
+            <zeebe:output source="=orderCrudResult" target="toolCallResult" />
+            <zeebe:output source="=operationStatus" target="updateOrder.createPurchaseOrder.operationStatus" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="Activity_1tirp1e" name="Delete Purchase Item" zeebe:modelerTemplate="com.example.camunda.manage-purchase-item" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%23198754&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Ccircle cx=&#39;9&#39; cy=&#39;21&#39; r=&#39;1&#39;%3E%3C/circle%3E%3Ccircle cx=&#39;20&#39; cy=&#39;21&#39; r=&#39;1&#39;%3E%3C/circle%3E%3Cpath d=&#39;M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6&#39;%3E%3C/path%3E%3C/svg%3E">
+        <bpmn:documentation>Use this tool too delete to create a line item for a purchase order.</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="manage-purchase-item" />
+          <zeebe:ioMapping>
+            <zeebe:input source="DELETE" target="operation" />
+            <zeebe:input source="=fromAi(toolCall.purchaseItemId, &#34;This is the ID of the purchase item you want to remove&#34;)" target="purchaseItemId" />
+            <zeebe:output source="=itemCrudResult" target="toolCallResult" />
+            <zeebe:output source="=operationStatus" target="purchaseItemdelete.operationStatus" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="Activity_15sadtk" name="Find Purchase Item" zeebe:modelerTemplate="com.example.camunda.manage-purchase-item" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%23198754&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Ccircle cx=&#39;9&#39; cy=&#39;21&#39; r=&#39;1&#39;%3E%3C/circle%3E%3Ccircle cx=&#39;20&#39; cy=&#39;21&#39; r=&#39;1&#39;%3E%3C/circle%3E%3Cpath d=&#39;M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6&#39;%3E%3C/path%3E%3C/svg%3E">
+        <bpmn:documentation>Use this tool in order to search for a line item for a purchase order, you can either use order id or purchase item id.</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="manage-purchase-item" />
+          <zeebe:ioMapping>
+            <zeebe:input source="QUERY" target="operation" />
+            <zeebe:input source="=fromAi(toolCall.orderId, &#34;This is the ideo of the order this item should be added to. &#34;)" target="orderId" />
+            <zeebe:input source="=fromAi(toolCall.purchaseItemId, &#34;This is the ID of the purchase item you want to remove&#34;)" target="purchaseItemId" />
+            <zeebe:output source="=itemCrudResult" target="toolCallResult" />
+            <zeebe:output source="=operationStatus" target="purchaseItem.operationStatus" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="Activity_09vv1xt" name="Update Employee Records" zeebe:modelerTemplate="com.example.camunda.manage-employee-record" zeebe:modelerTemplateVersion="5" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%230f766e&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Crect x=&#39;3&#39; y=&#39;4&#39; width=&#39;18&#39; height=&#39;16&#39; rx=&#39;2&#39; ry=&#39;2&#39;%3E%3C/rect%3E%3Ccircle cx=&#39;8&#39; cy=&#39;10&#39; r=&#39;2&#39;%3E%3C/circle%3E%3Cpath d=&#39;M6 16c0-1.5 1-2.5 2-2.5s2 1 2 2.5&#39;%3E%3C/path%3E%3Cline x1=&#39;13&#39; y1=&#39;9&#39; x2=&#39;18&#39; y2=&#39;9&#39;%3E%3C/line%3E%3Cline x1=&#39;13&#39; y1=&#39;12&#39; x2=&#39;18&#39; y2=&#39;12&#39;%3E%3C/line%3E%3Cline x1=&#39;13&#39; y1=&#39;15&#39; x2=&#39;18&#39; y2=&#39;15&#39;%3E%3C/line%3E%3C/svg%3E">
+        <bpmn:documentation>Use this tool to update an employee Record</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="manage-employee-record" />
+          <zeebe:ioMapping>
+            <zeebe:input source="UPDATE" target="operation" />
+            <zeebe:input source="=fromAi(toolCall.employeeId, &#34;This is the id of the record you&#39;d like to update&#34;)" target="employeeId" />
+            <zeebe:input source="=fromAi(toolCall.employeeName, &#34;This is the full name of the employee you&#39;d like to update&#34;)" target="fullName" />
+            <zeebe:input source="=fromAi(toolCall.jobTitle, &#34;this is the job title of the employee you&#39;d like to update&#34;)" target="jobTitle" />
+            <zeebe:input source="=fromAi(toolCall.department, &#34;this is the department title of the employee you&#39;d like to update&#34;)" target="department" />
+            <zeebe:input target="phoneNumber" />
+            <zeebe:output source="=employeeCrudResult" target="toolCallResult" />
+            <zeebe:output source="=operationStatus" target="employeeRecordsUpdate.operationStatus" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="Activity_0r8msom" name="Create Long-term Injury Insurance Policy" zeebe:modelerTemplate="com.example.camunda.manage-insurance-policy" zeebe:modelerTemplateVersion="4" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%230d6efd&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Cpath d=&#39;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&#39;%3E%3C/path%3E%3C/svg%3E">
+        <bpmn:documentation>You can use this tool to Create details of a new long-term insurance policies held by a customers or company</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="manage-insurance-policy" />
+          <zeebe:ioMapping>
+            <zeebe:input source="CREATE" target="operation" />
+            <zeebe:input target="policyId" />
+            <zeebe:input source="LONG_TERM_INJURY" target="policyType" />
+            <zeebe:input source="=&#34;ACTIVE&#34;" target="status" />
+            <zeebe:input source="=fromAi(toolCall.startDate, &#34;This is the start date of the policy usually today&#39;s date formatted  YYYY-MM-DD.&#34;)" target="startDate" />
+            <zeebe:input source="=fromAi(toolCall.endDate, &#34;This is the end date of the policy usually 3 years from today. formatted  YYYY-MM-DD.&#34;)" target="endDate" />
+            <zeebe:input source="=fromAi(toolCall.premiumAmount, &#34;This is the monthy premium for the policy.&#34;, &#34;number&#34;)" target="premiumAmount" />
+            <zeebe:input source="=fromAi(toolCall.coverageAmount, &#34;This is the Maximum payout amount. for the policy.&#34;, &#34;number&#34;)" target="coverageAmount" />
+            <zeebe:input source="=fromAi(toolCall.notes, &#34;This is a short description about how this policy came about.&#34;)" target="notes" />
+            <zeebe:input source="CUSTOMER" target="holderType" />
+            <zeebe:input source="=fromAi(toolCall.customerId, &#34;This is the Id of the customer you&#39;re looking for a policy related to, leave empty if you don&#39;t want to use this search criteria&#34;)" target="customerId" />
+            <zeebe:input source="=fromAi(toolCall.companyId, &#34;This is the Id of the company you&#39;re looking for a policy related to, leave empty if you don&#39;t want to use this search criteria&#34;)" target="companyId" />
+            <zeebe:input source="=fromAi(toolCall.monthlyBenefit, &#34;This is the amount that will be paid out while the customer is out of work&#34;)" target="monthlyBenefit" />
+            <zeebe:input source="=fromAi(toolCall.waitingPeriod, &#34;Number of days after a claim before benefit payments begin.&#34;)" target="waitingPeriodDays" />
+            <zeebe:input source="=fromAi(toolCall.maxBenefitPeriod, &#34;Maximum number of months benefit payments will be made.&#34;)" target="maxBenefitPeriodMonths" />
+            <zeebe:output source="=policyCrudResult" target="toolCallResult" />
+            <zeebe:output source="=operationStatus" target="policyOperationStatus" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="Activity_1uewswn" name="Delete a Product" zeebe:modelerTemplate="com.example.camunda.manage-product" zeebe:modelerTemplateVersion="1" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%230d6efd&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Cpath d=&#39;M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z&#39;%3E%3C/path%3E%3Cpolyline points=&#39;3.27 6.96 12 12.01 20.73 6.96&#39;%3E%3C/polyline%3E%3Cline x1=&#39;12&#39; y1=&#39;22.08&#39; x2=&#39;12&#39; y2=&#39;12&#39;%3E%3C/line%3E%3C/svg%3E">
+        <bpmn:documentation>Use This tool to update details of an existing  product for the company stock. the product Id is required. All other inputs are only needed if you intend to change them otherwise leave them empty</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="manage-product" />
+          <zeebe:ioMapping>
+            <zeebe:input source="DELETE" target="operation" />
+            <zeebe:input source="=fromAi(toolCall.productId, &#34;This is the id of the product you&#39;d like to delete&#34;)" target="productId" />
+            <zeebe:output source="=productCrudResult" target="toolCallResult" />
+            <zeebe:output source="=operationStatus" target="createProduct.operationStatus" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="Activity_17juw46" name="Update Pet Insurance Policy" zeebe:modelerTemplate="com.example.camunda.manage-insurance-policy" zeebe:modelerTemplateVersion="4" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%230d6efd&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Cpath d=&#39;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&#39;%3E%3C/path%3E%3C/svg%3E">
+        <bpmn:documentation>You can use this tool to Update details of a Pet insurance policy held by a customers or company</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="manage-insurance-policy" />
+          <zeebe:ioMapping>
+            <zeebe:input source="UPDATE" target="operation" />
+            <zeebe:input source="=fromAi(toolCall.policyId, &#34;This is the Id of the policy you&#39;re looking for, leave empty if you don&#39;t want to use this search criteria&#34;)" target="policyId" />
+            <zeebe:input source="PET" target="policyType" />
+            <zeebe:input source="=&#34;ACTIVE&#34;" target="status" />
+            <zeebe:input source="=fromAi(toolCall.startDate, &#34;This is the start date of the policy usually today&#39;s date formatted  YYYY-MM-DD.&#34;)" target="startDate" />
+            <zeebe:input source="=fromAi(toolCall.endDate, &#34;This is the end date of the policy usually 3 years from today. formatted  YYYY-MM-DD.&#34;)" target="endDate" />
+            <zeebe:input source="=fromAi(toolCall.premiumAmount, &#34;This is the monthy premium for the policy.&#34;, &#34;number&#34;)" target="premiumAmount" />
+            <zeebe:input source="=fromAi(toolCall.coverageAmount, &#34;This is the Maximum payout amount. for the policy.&#34;, &#34;number&#34;)" target="coverageAmount" />
+            <zeebe:input source="=fromAi(toolCall.notes, &#34;This is a short description about how this policy came about.&#34;)" target="notes" />
+            <zeebe:input source="CUSTOMER" target="holderType" />
+            <zeebe:input source="=fromAi(toolCall.customerId, &#34;This is the Id of the customer you&#39;re looking for a policy related to, leave empty if you don&#39;t want to use this search criteria&#34;)" target="customerId" />
+            <zeebe:input source="=fromAi(toolCall.companyId, &#34;This is the Id of the company you&#39;re looking for a policy related to, leave empty if you don&#39;t want to use this search criteria&#34;)" target="companyId" />
+            <zeebe:input source="=fromAi(toolCall.petName, &#34;The Name of the Pet&#34;)" target="petName" />
+            <zeebe:input source="=fromAi(toolCall.species, &#34;This is the . species of the pet. Cat, Dog... or whatever the pet is.&#34;)" target="petSpecies" />
+            <zeebe:input source="=fromAi(toolCall.breed, &#34;This is the . breed of the pet. only needed in cases where the pet in question has a breed&#34;)" target="petBreed" />
+            <zeebe:input source="=fromAi(toolCall.age, &#34;Current Age of the pet in years as of the start date of the policy. &#34;)" target="petAge" />
+            <zeebe:output source="=policyCrudResult" target="toolCallResult" />
+            <zeebe:output source="=operationStatus" target="policyOperationStatus" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="Activity_1ux50on" name="Update Long-term Injury Insurance Policy" zeebe:modelerTemplate="com.example.camunda.manage-insurance-policy" zeebe:modelerTemplateVersion="4" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%230d6efd&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Cpath d=&#39;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&#39;%3E%3C/path%3E%3C/svg%3E">
+        <bpmn:documentation>You can use this tool to update details of a new long-term insurance policies held by a customers or company</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="manage-insurance-policy" />
+          <zeebe:ioMapping>
+            <zeebe:input source="UPDATE" target="operation" />
+            <zeebe:input source="=fromAi(toolCall.policyId, &#34;This is the Id of the policy you&#39;re looking for, leave empty if you don&#39;t want to use this search criteria&#34;)" target="policyId" />
+            <zeebe:input source="LONG_TERM_INJURY" target="policyType" />
+            <zeebe:input source="=&#34;ACTIVE&#34;" target="status" />
+            <zeebe:input source="=fromAi(toolCall.startDate, &#34;This is the start date of the policy usually today&#39;s date formatted  YYYY-MM-DD.&#34;)" target="startDate" />
+            <zeebe:input source="=fromAi(toolCall.endDate, &#34;This is the end date of the policy usually 3 years from today. formatted  YYYY-MM-DD.&#34;)" target="endDate" />
+            <zeebe:input source="=fromAi(toolCall.premiumAmount, &#34;This is the monthy premium for the policy.&#34;, &#34;number&#34;)" target="premiumAmount" />
+            <zeebe:input source="=fromAi(toolCall.coverageAmount, &#34;This is the Maximum payout amount. for the policy.&#34;, &#34;number&#34;)" target="coverageAmount" />
+            <zeebe:input source="=fromAi(toolCall.notes, &#34;This is a short description about how this policy came about.&#34;)" target="notes" />
+            <zeebe:input source="CUSTOMER" target="holderType" />
+            <zeebe:input source="=fromAi(toolCall.customerId, &#34;This is the Id of the customer you&#39;re looking for a policy related to, leave empty if you don&#39;t want to use this search criteria&#34;)" target="customerId" />
+            <zeebe:input source="=fromAi(toolCall.companyId, &#34;This is the Id of the company you&#39;re looking for a policy related to, leave empty if you don&#39;t want to use this search criteria&#34;)" target="companyId" />
+            <zeebe:input source="=fromAi(toolCall.monthlyBenefit, &#34;This is the amount that will be paid out while the customer is out of work&#34;)" target="monthlyBenefit" />
+            <zeebe:input source="=fromAi(toolCall.waitingPeriod, &#34;Number of days after a claim before benefit payments begin.&#34;)" target="waitingPeriodDays" />
+            <zeebe:input source="=fromAi(toolCall.maxBenefitPeriod, &#34;Maximum number of months benefit payments will be made.&#34;)" target="maxBenefitPeriodMonths" />
+            <zeebe:output source="=policyCrudResult" target="toolCallResult" />
+            <zeebe:output source="=operationStatus" target="policyOperationStatus" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="Activity_07cwrgh" name="Send Update" zeebe:modelerTemplate="io.camunda.connectors.email.v1" zeebe:modelerTemplateVersion="4" zeebe:modelerTemplateIcon="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzkwXzI0MjApIj4KPHBhdGggZD0iTTguMzM4MzUgOS45NTM2NUwxMC4zODk0IDEyLjAxMDRMOC4zMzI2MiAxNC4wNjcyTDkuMTQ2MTYgMTQuODc1TDEyLjAxMDcgMTIuMDEwNEw5LjE0NjE2IDkuMTQ1ODNMOC4zMzgzNSA5Ljk1MzY1WiIgZmlsbD0iYmxhY2siLz4KPHBhdGggZD0iTTEyLjM0ODggOS45NTM2NUwxNC4zOTk4IDEyLjAxMDRMMTIuMzQzIDE0LjA2NzJMMTMuMTU2NiAxNC44NzVMMTYuMDIxMiAxMi4wMTA0TDEzLjE1NjYgOS4xNDU4M0wxMi4zNDg4IDkuOTUzNjVaIiBmaWxsPSJibGFjayIvPgo8cGF0aCBkPSJNMy45NzIgMTEuNDM3NUgxLjEyNTMzVjIuNzkyMTlMNy42NzM3NiA3LjMyMzk2QzcuNzY5NjcgNy4zOTA0OSA3Ljg4MzYgNy40MjYxNCA4LjAwMDMyIDcuNDI2MTRDOC4xMTcwNSA3LjQyNjE0IDguMjMwOTggNy4zOTA0OSA4LjMyNjg5IDcuMzIzOTZMMTQuODc1MyAyLjc5MjE5VjhIMTYuMDIxMlYyLjI3MDgzQzE2LjAyMTIgMS45NjY5NCAxNS45MDA0IDEuNjc1NDkgMTUuNjg1NiAxLjQ2MDYxQzE1LjQ3MDcgMS4yNDU3MiAxNS4xNzkyIDEuMTI1IDE0Ljg3NTMgMS4xMjVIMS4xMjUzM0MwLjgyMTQzMiAxLjEyNSAwLjUyOTk4NCAxLjI0NTcyIDAuMzE1MDk5IDEuNDYwNjFDMC4xMDAyMTQgMS42NzU0OSAtMC4wMjA1MDc4IDEuOTY2OTQgLTAuMDIwNTA3OCAyLjI3MDgzVjExLjQzNzVDLTAuMDIwNTA3OCAxMS43NDE0IDAuMTAwMjE0IDEyLjAzMjggMC4zMTUwOTkgMTIuMjQ3N0MwLjUyOTk4NCAxMi40NjI2IDAuODIxNDMyIDEyLjU4MzMgMS4xMjUzMyAxMi41ODMzSDMuOTcyVjExLjQzNzVaTTEzLjYxNDkgMi4yNzA4M0w4LjAwMDMyIDYuMTU1MjFMMi4zODU3NCAyLjI3MDgzSDEzLjYxNDlaIiBmaWxsPSIjRkM1RDBEIi8+CjxwYXRoIGQ9Ik00LjI4MjEgOS45NTM2NUw2LjMzMzE0IDEyLjAxMDRMNC4yNzYzNyAxNC4wNjcyTDUuMDg5OTEgMTQuODc1TDcuOTU0NDkgMTIuMDEwNEw1LjA4OTkxIDkuMTQ1ODNMNC4yODIxIDkuOTUzNjVaIiBmaWxsPSJibGFjayIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzkwXzI0MjAiPgo8cmVjdCB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIGZpbGw9IndoaXRlIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg==">
+        <bpmn:documentation>Use this tool to send a one-off notification email to a Customer, Company or Employee if the need arrises</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="io.camunda:email:1" retries="0" />
+          <zeebe:ioMapping>
+            <zeebe:input source="simple" target="authentication.type" />
+            <zeebe:input source="{{secrets.EMAIL_USER_NAME_DMN}}" target="authentication.username" />
+            <zeebe:input source="{{secrets.EMAIL_PASSWORD_DMN}}" target="authentication.password" />
+            <zeebe:input source="smtp" target="protocol" />
+            <zeebe:input source="smtp.gmail.com" target="data.smtpConfig.smtpHost" />
+            <zeebe:input source="=587" target="data.smtpConfig.smtpPort" />
+            <zeebe:input source="TLS" target="data.smtpConfig.smtpCryptographicProtocol" />
+            <zeebe:input source="sendEmailSmtp" target="data.smtpActionDiscriminator" />
+            <zeebe:input source="rebbrowncamunda@gmail.com" target="data.smtpAction.from" />
+            <zeebe:input source="=fromAi(toolCall.email, &#34;This is the address you want to send the email to.&#34;)" target="data.smtpAction.to" />
+            <zeebe:input source="=fromAi(toolCall.subject, &#34;This is the subject of the email&#34;)" target="data.smtpAction.subject" />
+            <zeebe:input source="PLAIN" target="data.smtpAction.contentType" />
+            <zeebe:input source="=fromAi(toolCall.emailContent, &#34;The email text content, format as nicely as possible in plain text&#34;)" target="data.smtpAction.body" />
+          </zeebe:ioMapping>
+          <zeebe:taskHeaders>
+            <zeebe:header key="elementTemplateVersion" value="4" />
+            <zeebe:header key="elementTemplateId" value="io.camunda.connectors.email.v1" />
+            <zeebe:header key="resultVariable" value="toolCallResult" />
+            <zeebe:header key="retryBackoff" value="PT0S" />
+          </zeebe:taskHeaders>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="Activity_1e9lana" name="Get Customer Record" zeebe:modelerTemplate="com.example.camunda.search-customer" zeebe:modelerTemplateVersion="2" zeebe:modelerTemplateIcon="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;18&#39; height=&#39;18&#39; viewBox=&#39;0 0 24 24&#39; fill=&#39;none&#39; stroke=&#39;%236f42c1&#39; stroke-width=&#39;2&#39; stroke-linecap=&#39;round&#39; stroke-linejoin=&#39;round&#39;%3E%3Ccircle cx=&#39;11&#39; cy=&#39;11&#39; r=&#39;8&#39;%3E%3C/circle%3E%3Cpath d=&#39;m21 21-4.35-4.35&#39;%3E%3C/path%3E%3Ccircle cx=&#39;11&#39; cy=&#39;8&#39; r=&#39;2&#39;%3E%3C/circle%3E%3Cpath d=&#39;M7 17v-1a4 4 0 0 1 4-4h0a4 4 0 0 1 4 4v1&#39;%3E%3C/path%3E%3C/svg%3E">
+        <bpmn:documentation>Use this tool to get a Customer Record. You only need to add the input for the params you're using as part of the search</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="query-for-customer" />
+          <zeebe:ioMapping>
+            <zeebe:input source="FLEXIBLE" target="searchMode" />
+            <zeebe:input source="=fromAi(toolCall.customerName, &#34;This is the name of the customer you want to find&#34;)" target="customerName" />
+            <zeebe:input source="=fromAi(toolCall.customerEmail, &#34;This is the email address that the customer can be reached at.&#34;)" target="email" />
+            <zeebe:input source="=fromAi(toolCall.customerId, &#34;This is the customerId of the record&#34;)" target="customerId" />
+            <zeebe:input source="=&#34;&#34;" target="trustLevel" />
+            <zeebe:input source="true" target="fuzzyMatching" />
+            <zeebe:output source="=customerSearchResult" target="toolCallResult" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
     </bpmn:adHocSubProcess>
     <bpmn:sequenceFlow id="Flow_039f6yy" sourceRef="StartEvent_1" targetRef="Activity_1emfkjc" />
     <bpmn:startEvent id="Event_0phu59u" name="Input from Slack" zeebe:modelerTemplate="io.camunda.connectors.inbound.Slack.MessageStartEvent.v1" zeebe:modelerTemplateVersion="8" zeebe:modelerTemplateIcon="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI3IiBoZWlnaHQ9IjEyNyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMjcuMiA4MGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjJDNi43IDkzLjIuOCA4Ny4zLjggODBjMC03LjMgNS45LTEzLjIgMTMuMi0xMy4yaDEzLjJWODB6bTYuNiAwYzAtNy4zIDUuOS0xMy4yIDEzLjItMTMuMiA3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzNjMCA3LjMtNS45IDEzLjItMTMuMiAxMy4yLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMlY4MHoiIGZpbGw9IiNFMDFFNUEiLz4KICA8cGF0aCBkPSJNNDcgMjdjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMkMzMy44IDYuNSAzOS43LjYgNDcgLjZjNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yVjI3SDQ3em0wIDYuN2M3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDEzLjlDNi42IDYwLjEuNyA1NC4yLjcgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJINDd6IiBmaWxsPSIjMzZDNUYwIi8+CiAgPHBhdGggZD0iTTk5LjkgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjIgNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yIDAgNy4zLTUuOSAxMy4yLTEzLjIgMTMuMkg5OS45VjQ2Ljl6bS02LjYgMGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjEzLjhDNjYuOSA2LjUgNzIuOC42IDgwLjEuNmM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzMuMXoiIGZpbGw9IiMyRUI2N0QiLz4KICA8cGF0aCBkPSJNODAuMSA5OS44YzcuMyAwIDEzLjIgNS45IDEzLjIgMTMuMiAwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjk5LjhoMTMuMnptMC02LjZjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMiAwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJoMzMuMWM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDgwLjF6IiBmaWxsPSIjRUNCMjJFIi8+Cjwvc3ZnPgo=">
@@ -615,7 +795,7 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
           <zeebe:property name="inbound.context" value="{{secrets.SLACK_ALLIEDHENNA_WEBHOOK_ID}}" />
           <zeebe:property name="inbound.slackSigningSecret" value="{{secrets.SLACK_ALLIED_HENNA_SIGINING_SECRET}}" />
           <zeebe:property name="inbound.verificationExpression" value="=if (body.type != null and body.type = &#34;url_verification&#34;) then {body:{&#34;challenge&#34;:body.challenge}, statusCode: 200} else null" />
-          <zeebe:property name="activationCondition" value="=request.body.event.type = &#34;app_mention&#34;&#10;and not(is defined(request.headers.x-slack-retry-num))" />
+          <zeebe:property name="activationCondition" value="=request.body.event.type = &#34;app_mention&#34;&#10;and not(is defined(request.headers.x-slack-retry-num))&#10;and not(is defined(request.body.event.thread_ts))" />
           <zeebe:property name="consumeUnmatchedEvents" value="false" />
           <zeebe:property name="correlationRequired" value="notRequired" />
           <zeebe:property name="deduplicationModeManualFlag" value="false" />
@@ -788,7 +968,6 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
       </bpmn:extensionElements>
     </bpmn:serviceTask>
     <bpmn:group id="Group_0tq7r30" categoryValueRef="CategoryValue_0cawvd6" />
-    <bpmn:group id="Group_028n8pt" categoryValueRef="CategoryValue_0v2tkmg" />
     <bpmn:group id="Group_1gafnh6" categoryValueRef="CategoryValue_1n1l31e" />
     <bpmn:group id="Group_0w7obqw" categoryValueRef="CategoryValue_0lauhnl" />
     <bpmn:group id="Group_0cmfbko" categoryValueRef="CategoryValue_1xadt0c" />
@@ -796,10 +975,7 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
     <bpmn:association id="Association_0pyc58i" associationDirection="One" sourceRef="Event_0jnd1im" targetRef="Activity_07dva3w" />
   </bpmn:process>
   <bpmn:category id="Category_1s6wkf7">
-    <bpmn:categoryValue id="CategoryValue_0cawvd6" value="Crud Stuff" />
-  </bpmn:category>
-  <bpmn:category id="Category_0ysp1a9">
-    <bpmn:categoryValue id="CategoryValue_0v2tkmg" value="Search Stuff" />
+    <bpmn:categoryValue id="CategoryValue_0cawvd6" value="Companies and People" />
   </bpmn:category>
   <bpmn:category id="Category_13kzw9r">
     <bpmn:categoryValue id="CategoryValue_1n1l31e" value="Orders and Package" />
@@ -833,55 +1009,51 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_094wby9_di" bpmnElement="Activity_1emfkjc" isExpanded="true">
-        <dc:Bounds x="250" y="-330" width="1490" height="810" />
+        <dc:Bounds x="250" y="-310" width="1490" height="790" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0a4032f_di" bpmnElement="Activity_0pv91yw" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
-        <dc:Bounds x="970" y="210" width="100" height="80" />
+        <dc:Bounds x="880" y="330" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_14ayjlk" bpmnElement="Activity_1cbfpzw" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
-        <dc:Bounds x="450" y="330" width="100" height="80" />
+        <dc:Bounds x="310" y="330" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_18ah8mu" bpmnElement="Activity_0emkfdg">
+      <bpmndi:BPMNShape id="BPMNShape_18ah8mu" bpmnElement="Activity_0emkfdg" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
         <dc:Bounds x="310" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0yed1rr" bpmnElement="Activity_1vzl62d">
+      <bpmndi:BPMNShape id="BPMNShape_0yed1rr" bpmnElement="Activity_1vzl62d" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
         <dc:Bounds x="310" y="210" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1kn7bwv" bpmnElement="Activity_0r13qoz">
-        <dc:Bounds x="640" y="210" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0z10tec" bpmnElement="Activity_0l2lo1d">
-        <dc:Bounds x="640" y="330" width="100" height="80" />
+        <dc:Bounds x="590" y="330" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1xuxpqu" bpmnElement="Activity_1d71ttx" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
-        <dc:Bounds x="970" y="330" width="100" height="80" />
+        <dc:Bounds x="760" y="330" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1oxpqaa_di" bpmnElement="Activity_0yi66rw">
-        <dc:Bounds x="640" y="80" width="100" height="80" />
+        <dc:Bounds x="590" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1y67lb2_di" bpmnElement="Activity_08nyj4v">
-        <dc:Bounds x="340" y="-180" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1y67lb2_di" bpmnElement="DisplayAnswerToUser" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
+        <dc:Bounds x="310" y="-180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0u1w1b3_di" bpmnElement="Activity_06np787">
-        <dc:Bounds x="970" y="100" width="100" height="80" />
+        <dc:Bounds x="1060" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1x9mlqe_di" bpmnElement="Activity_10c1u1e">
-        <dc:Bounds x="1100" y="210" width="100" height="80" />
+        <dc:Bounds x="1060" y="330" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0crq0s2_di" bpmnElement="Activity_0twljfx">
-        <dc:Bounds x="1430" y="-180" width="100" height="80" />
+        <dc:Bounds x="1560" y="-180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1s1k7ni_di" bpmnElement="Activity_1g5r52i" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
@@ -897,34 +1069,38 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0k77v1e_di" bpmnElement="Activity_1dpt7ic" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
-        <dc:Bounds x="1300" y="-80" width="100" height="80" />
+        <dc:Bounds x="1300" y="320" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_19hlmaz_di" bpmnElement="Activity_10f89x1">
-        <dc:Bounds x="1430" y="30" width="100" height="80" />
+        <dc:Bounds x="1560" y="30" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1ikpcsl_di" bpmnElement="Event_1hkrnly">
-        <dc:Bounds x="742" y="-158" width="36" height="36" />
+      <bpmndi:BPMNShape id="Activity_04w5zg6_di" bpmnElement="Activity_1iq511p" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
+        <dc:Bounds x="450" y="-180" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ikpcsl_di" bpmnElement="Event_1hkrnly" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
+        <dc:Bounds x="682" y="-158" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="723" y="-115" width="75" height="27" />
+          <dc:Bounds x="663" y="-115" width="75" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1wjcx81_di" bpmnElement="Gateway_1nkqpti">
-        <dc:Bounds x="655" y="-165" width="50" height="50" />
+        <dc:Bounds x="595" y="-165" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_120n74x_di" bpmnElement="Event_120n74x">
-        <dc:Bounds x="742" y="-48" width="36" height="36" />
+        <dc:Bounds x="682" y="-48" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="724" y="-5" width="73" height="14" />
+          <dc:Bounds x="665" y="-5" width="73" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_11vuznq" bpmnElement="Activity_0zn7l02" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
-        <dc:Bounds x="1430" y="-80" width="100" height="80" />
+        <dc:Bounds x="1430" y="320" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0ixgn7l" bpmnElement="Activity_1y66aoa">
-        <dc:Bounds x="1560" y="-80" width="100" height="80" />
+        <dc:Bounds x="1560" y="320" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_13ihqw7" bpmnElement="Activity_0r01ssa" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
@@ -935,61 +1111,103 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
         <dc:Bounds x="450" y="210" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1qo6zbf" bpmnElement="Activity_00mzpyq">
-        <dc:Bounds x="1100" y="100" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_1qo6zbf" bpmnElement="Activity_00mzpyq" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="760" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ix3y3o_di" bpmnElement="ASK_FOLLOWUP_QUESTION">
-        <dc:Bounds x="890" y="-180" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0ix3y3o_di" bpmnElement="ASK_FOLLOWUP_QUESTION" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
+        <dc:Bounds x="760" y="-180" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0d0j732_di" bpmnElement="Event_06myd73">
-        <dc:Bounds x="1122" y="-158" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_0d0j732_di" bpmnElement="Event_06myd73" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
+        <dc:Bounds x="992" y="-158" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1103" y="-115" width="80" height="27" />
+          <dc:Bounds x="973" y="-115" width="80" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1yfey94_di" bpmnElement="Gateway_031ptly">
-        <dc:Bounds x="1025" y="-165" width="50" height="50" />
+        <dc:Bounds x="895" y="-165" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_151u4rp" bpmnElement="Event_0h1ivzh">
-        <dc:Bounds x="1122" y="-48" width="36" height="36" />
+        <dc:Bounds x="992" y="-48" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1104" y="-5" width="73" height="14" />
+          <dc:Bounds x="974" y="-5" width="73" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0m98o9o" bpmnElement="Activity_0k2ig9k" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
-        <dc:Bounds x="1560" y="-180" width="100" height="80" />
+        <dc:Bounds x="1430" y="-180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_04w5zg6_di" bpmnElement="Activity_1iq511p">
-        <dc:Bounds x="510" y="-180" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_1axk5vy" bpmnElement="Activity_1ip58jt" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="1430" y="30" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1o70lwb" bpmnElement="Activity_1tirp1e" bioc:stroke="#831311" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#831311">
+        <dc:Bounds x="1430" y="150" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1dqk5wg" bpmnElement="Activity_15sadtk">
+        <dc:Bounds x="1560" y="150" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0t5mk6l" bpmnElement="Activity_09vv1xt" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="450" y="330" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1qcmjdf" bpmnElement="Activity_0r8msom" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="880" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1tf1odl" bpmnElement="Activity_1uewswn" bioc:stroke="#831311" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#831311">
+        <dc:Bounds x="1430" y="-70" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_104gbwa" bpmnElement="Activity_17juw46" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="760" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0h9evn3" bpmnElement="Activity_1ux50on" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="880" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1rxy6ku" bpmnElement="Activity_07cwrgh" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
+        <dc:Bounds x="1120" y="-180" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05axyni_di" bpmnElement="Activity_1e9lana">
+        <dc:Bounds x="590" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0y5x1vm_di" bpmnElement="Event_0v7ueoj">
+        <dc:Bounds x="342" y="-118" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="324" y="-75" width="73" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0my6upa_di" bpmnElement="Flow_0my6upa">
-        <di:waypoint x="610" y="-140" />
-        <di:waypoint x="655" y="-140" />
+        <di:waypoint x="550" y="-140" />
+        <di:waypoint x="595" y="-140" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1yg6bnr_di" bpmnElement="Flow_1yg6bnr">
-        <di:waypoint x="705" y="-140" />
-        <di:waypoint x="742" y="-140" />
+        <di:waypoint x="645" y="-140" />
+        <di:waypoint x="682" y="-140" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1lrxz0t_di" bpmnElement="Flow_1lrxz0t">
-        <di:waypoint x="680" y="-115" />
-        <di:waypoint x="680" y="-30" />
-        <di:waypoint x="742" y="-30" />
+        <di:waypoint x="620" y="-115" />
+        <di:waypoint x="620" y="-30" />
+        <di:waypoint x="682" y="-30" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1rnsu19_di" bpmnElement="Flow_1rnsu19">
-        <di:waypoint x="1075" y="-140" />
-        <di:waypoint x="1122" y="-140" />
+        <di:waypoint x="945" y="-140" />
+        <di:waypoint x="992" y="-140" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_13d1fw3_di" bpmnElement="Flow_13d1fw3">
-        <di:waypoint x="990" y="-140" />
-        <di:waypoint x="1025" y="-140" />
+        <di:waypoint x="860" y="-140" />
+        <di:waypoint x="895" y="-140" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0dks2fa_di" bpmnElement="Flow_0dks2fa">
-        <di:waypoint x="1050" y="-115" />
-        <di:waypoint x="1050" y="-30" />
-        <di:waypoint x="1122" y="-30" />
+        <di:waypoint x="920" y="-115" />
+        <di:waypoint x="920" y="-30" />
+        <di:waypoint x="992" y="-30" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1ui098b_di" bpmnElement="Event_0phu59u">
         <dc:Bounds x="-38" y="132" width="36" height="36" />
@@ -997,11 +1215,11 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
           <dc:Bounds x="-60" y="175" width="80" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0urin6e" bpmnElement="Activity_1typjxw">
+      <bpmndi:BPMNShape id="BPMNShape_0urin6e" bpmnElement="Activity_1typjxw" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
         <dc:Bounds x="70" y="110" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0dd2ih7" bpmnElement="Activity_0jxifih">
+      <bpmndi:BPMNShape id="BPMNShape_0dd2ih7" bpmnElement="Activity_0jxifih" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
         <dc:Bounds x="70" y="260" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
@@ -1021,38 +1239,32 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
         <dc:Bounds x="70" y="-156" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0ljqaed" bpmnElement="Activity_07dva3w">
+      <bpmndi:BPMNShape id="BPMNShape_0ljqaed" bpmnElement="Activity_07dva3w" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
         <dc:Bounds x="70" y="-2" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Group_0tq7r30_di" bpmnElement="Group_0tq7r30">
-        <dc:Bounds x="290" y="40" width="300" height="410" />
+        <dc:Bounds x="290" y="40" width="430" height="410" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="416" y="47" width="50" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Group_028n8pt_di" bpmnElement="Group_028n8pt">
-        <dc:Bounds x="610" y="40" width="300" height="410" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="730" y="47" width="61" height="14" />
+          <dc:Bounds x="469" y="47" width="77" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Group_1gafnh6_di" bpmnElement="Group_1gafnh6">
-        <dc:Bounds x="1270" y="-252" width="430" height="522" />
+        <dc:Bounds x="1270" y="-252" width="430" height="682" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1443" y="-242" width="56" height="27" />
+          <dc:Bounds x="1444" y="-242" width="55" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Group_0w7obqw_di" bpmnElement="Group_0w7obqw">
-        <dc:Bounds x="940" y="40" width="300" height="410" />
+        <dc:Bounds x="740" y="40" width="440" height="410" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1055" y="56" width="70" height="27" />
+          <dc:Bounds x="925" y="47" width="70" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Group_0cmfbko_di" bpmnElement="Group_0cmfbko">
-        <dc:Bounds x="290" y="-252" width="940" height="272" />
+        <dc:Bounds x="290" y="-252" width="970" height="272" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="721" y="-235" width="77" height="14" />
+          <dc:Bounds x="736" y="-235" width="77" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_15kmf6b_di" bpmnElement="Event_0jnd1im">

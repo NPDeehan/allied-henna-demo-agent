@@ -76,8 +76,9 @@ The AI agent chooses and invokes tool tasks from the connector set, then loops w
 
 The process can answer through:
 - Camunda user task form (`display-answer-to-user-05en478`)
-- Slack outbound connector
-- Email outbound connector
+- Slack outbound connector (`Show answer in Slack`)
+- Email reply connector (`Ask Followup Question`) — used for conversational back-and-forth on email threads
+- One-off notification email (`Send Update`) — used by the agent to proactively notify a customer, company, or employee without expecting a reply
 
 For Slack and Email follow-up questions, event-based gateways wait for a response and timeout after `PT5M`.
 
@@ -87,25 +88,32 @@ The process includes compensation handlers for communication acknowledgements (f
 
 ## Custom Task Types
 
-All custom task connectors are defined via templates in this repository. They are organized by function:
+All custom task connectors are defined via templates in this repository. The agent process organises them into four functional groups:
 
-**Search/Query Tasks** (provided by worker):
-- `query-for-company` — Find companies in CRM
-- `search-account` — Search for accounts
-- `search-employee` — Search for employees
+### Companies and People
 
-**CRUD Tasks** (provided by worker):
-- `manage-account-record` — Create/update/delete account
-- `manage-company-record` — Create/update/delete company
-- `manage-customer-record` — Create/update/delete customer
-- `manage-employee-record` — Create/update/delete employee
-- `manage-customer-account-link` — Link customer to account
-- `manage-insurance-policy` — Manage policy records
-- `manage-package` — Manage packages
-- `manage-product` — Manage products
-- `manage-purchase-item` — Manage purchase items
-- `manage-purchase-order` — Manage purchase orders
-- `match-customer-with-dri` — Match customers to account representatives
+- `query-for-company` — Search for companies by name, industry, city, or revenue
+- `query-for-customer` — Search for customers by name, email, ID, or trust level (fuzzy matching supported)
+- `search-employee` — Search for employees by name, department, or job title
+- `manage-company-record` — Create or update a company record
+- `manage-customer-record` — Create or update a customer record
+- `manage-employee-record` — Create or update an employee record
+- `manage-customer-account-link` — Assign a customer a role (OWNER, ADMIN, NAMED) on an account
+
+### Orders and Packages
+
+- `search-account` — Search for accounts by ID, account number, or customer
+- `manage-account-record` — Create an account record (SAVINGS, CORPORATE, PERSONAL)
+- `manage-product` — Create, update, delete, or query products (Phones, Watches, Tablet, Laptops)
+- `manage-purchase-order` — Create, update, or query purchase orders
+- `manage-purchase-item` — Create, delete, or query line items on a purchase order
+- `manage-package` — Create, update, or query package/shipping records
+
+### Insurance and Accounts
+
+- `manage-insurance-policy` — Query insurance policies across all types
+- `manage-insurance-policy` (PET) — Create or update pet insurance policies (includes pet name, species, breed, age)
+- `manage-insurance-policy` (LONG_TERM_INJURY) — Create or update long-term injury policies (includes monthly benefit, waiting period, max benefit period)
 
 **Note:** All these tasks are implemented as workers in the [search-internal-systems-worker](https://github.com/NPDeehan/search-internal-systems-worker) project. Without that worker running, these tasks will remain pending.
 
